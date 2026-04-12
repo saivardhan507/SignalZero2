@@ -158,7 +158,7 @@ const CASE_STUDIES = [
 ];
 
 const BUDGET_OPTIONS = [
-  'Under ₹30k (Consulting Only)',
+  'Under ₹30k',
   '₹30k - ₹60k',
   '₹60k - ₹3L',
   '₹3L+',
