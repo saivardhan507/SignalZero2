@@ -26,6 +26,12 @@ import {
 // ===== CONSTANTS =====
 const SERVICES = [
   {
+    id: '3d', title: '3D Modeling & WebGL',
+    description: 'Interactive 3D experiences that captivate users with immersive product visualizations and virtual environments.',
+    icon: Box, color: '#ec4899',
+    tech: ['Three.js', 'Spline', 'WebGL', 'Blender', 'GSAP'],
+  },
+  {
     id: 'fullstack', title: 'Full-Stack Web Platform',
     description: 'Custom-built web applications with modern architectures, real-time features, and seamless user experiences.',
     icon: Code, color: '#00f0ff',
@@ -36,12 +42,6 @@ const SERVICES = [
     description: 'Intelligent AI agents trained on your data, enabling conversational AI, document Q&A, and automated decision-making.',
     icon: Brain, color: '#8b5cf6',
     tech: ['LangChain', 'GPT-4', 'Gemini', 'Vector DB', 'Python'],
-  },
-  {
-    id: '3d', title: '3D Modeling & WebGL',
-    description: 'Interactive 3D experiences that captivate users with immersive product visualizations and virtual environments.',
-    icon: Box, color: '#ec4899',
-    tech: ['Three.js', 'Spline', 'WebGL', 'Blender', 'GSAP'],
   },
   {
     id: 'fintech', title: 'FinTech & Algorithmic Dashboards',
@@ -105,6 +105,21 @@ const ragData = [
 
 const CASE_STUDIES = [
   {
+    id: 4,
+    title: 'Hospital Architecture Visualization',
+    category: '3D Modeling',
+    description: 'We partnered with a leading architectural firm to bring their hospital blueprints to life. Explore the spatial design and structural layout in real-time.',
+    challenge: 'Architects needed a way to present complex 3D structural layouts to stakeholders without requiring specialized visualization software.',
+    solution: 'Designed ultra-efficient, browser-based 3D models with interactive real-time controls, allowing for virtual walkthroughs and structural exploration.',
+    results: ['2 High-detail 3D models', '100% Browser-native', 'Real-time interactivity', 'Improved stakeholder buy-in'],
+    tech: ['Three.js', 'WebGL', 'Blender', 'GLB Optimized'],
+    chartType: '3d',
+    models: [
+      { src: '/models/modern_building.glb', title: 'Structural Hub' },
+      { src: '/models/hospital_waiting_room.glb', title: 'Waiting Area' }
+    ],
+  },
+  {
     id: 1,
     title: 'AI-Driven Stock Market Prediction Engine',
     category: 'FinTech & AI',
@@ -139,21 +154,6 @@ const CASE_STUDIES = [
     tech: ['LangChain', 'Pinecone', 'GPT-4', 'FastAPI', 'React', 'AWS'],
     chartType: 'radar',
     data: ragData,
-  },
-  {
-    id: 4,
-    title: 'Hospital Architecture Visualization',
-    category: '3D Modeling',
-    description: 'We partnered with a leading architectural firm to bring their hospital blueprints to life. Explore the spatial design and structural layout in real-time.',
-    challenge: 'Architects needed a way to present complex 3D structural layouts to stakeholders without requiring specialized visualization software.',
-    solution: 'Designed ultra-efficient, browser-based 3D models with interactive real-time controls, allowing for virtual walkthroughs and structural exploration.',
-    results: ['2 High-detail 3D models', '100% Browser-native', 'Real-time interactivity', 'Improved stakeholder buy-in'],
-    tech: ['Three.js', 'WebGL', 'Blender', 'GLB Optimized'],
-    chartType: '3d',
-    models: [
-      { src: '/models/modern_building.glb', title: 'Structural Hub' },
-      { src: '/models/hospital_waiting_room.glb', title: 'Waiting Area' }
-    ],
   },
 ];
 
