@@ -787,10 +787,10 @@ function CaseStudiesSection() {
   const [activeModelIndex, setActiveModelIndex] = useState(0);
   const cs = CASE_STUDIES[active];
 
-  // Auto-switch charts for the first case study (Stock Prediction)
+  // Auto-switch charts for the FinTech & AI case study
   useEffect(() => {
     let interval;
-    if (active === 0) {
+    if (cs.id === 1) {
       interval = setInterval(() => {
         setActiveChartIndex(prev => (prev === 0 ? 1 : 0));
       }, 5000); // Switch every 5 seconds
@@ -799,11 +799,11 @@ function CaseStudiesSection() {
     }
     setActiveModelIndex(0); // Reset for 3D models when switching case studies
     return () => clearInterval(interval);
-  }, [active]);
+  }, [active, cs.id]);
 
   const renderChart = () => {
-    // Dual charts for the first case study
-    if (active === 0) {
+    // Dual charts for the FinTech & AI case study (original id: 1)
+    if (cs.id === 1) {
       if (activeChartIndex === 1) {
         return (
           <ResponsiveContainer width="100%" height={250}>
@@ -1003,11 +1003,11 @@ function CaseStudiesSection() {
                 <div className="w-full">
                   <div className="flex items-center justify-between mb-4">
                     <h4 className="text-sm font-mono text-gray-500 tracking-wide uppercase">
-                      {active === 0 ? (activeChartIndex === 0 ? 'Performance Metrics' : 'Model Comparison') :
-                        active === 1 ? 'Data Processing Efficiency' : 
-                        active === 2 ? 'RAG System Metrics' : 'Interactive 3D Visuals'}
+                      {cs.id === 1 ? (activeChartIndex === 0 ? 'Performance Metrics' : 'Model Comparison') :
+                        cs.id === 2 ? 'Data Processing Efficiency' : 
+                        cs.id === 3 ? 'RAG System Metrics' : 'Interactive 3D Visuals'}
                     </h4>
-                    {active === 0 && (
+                    {cs.id === 1 && (
                       <div className="flex gap-1.5">
                         <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeChartIndex === 0 ? 'bg-[#00f0ff] w-3' : 'bg-white/10'}`} />
                         <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeChartIndex === 1 ? 'bg-[#00f0ff] w-3' : 'bg-white/10'}`} />
