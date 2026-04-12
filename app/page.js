@@ -1100,7 +1100,7 @@ function FounderSection() {
                   <a href="mailto:eppasaivardhanreddy@gmail.com" className="text-gray-400 hover:text-[#00f0ff] transition-colors">
                     <Mail className="w-5 h-5" />
                   </a>
-                  <a href="#" className="text-gray-400 hover:text-[#00f0ff] transition-colors">
+                  <a href="https://www.linkedin.com/in/eppa-sai-vardhan-reddy-5b71213a4" className="text-gray-400 hover:text-[#00f0ff] transition-colors">
                     <Linkedin className="w-5 h-5" />
                   </a>
                   <span className="text-sm text-gray-500 ml-2"><MapPin className="w-3.5 h-3.5 inline mr-1" />Hyderabad, India</span>
@@ -1731,7 +1731,7 @@ function Footer() {
             </p>
             <div className="flex items-center gap-4">
               <a href="mailto:eppasaivardhanreddy@gmail.com" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Mail className="w-4 h-4" /></a>
-              <a href="#" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Linkedin className="w-4 h-4" /></a>
+              <a href="https://www.linkedin.com/in/eppa-sai-vardhan-reddy-5b71213a4" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Linkedin className="w-4 h-4" /></a>
               <a href="#" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Globe className="w-4 h-4" /></a>
             </div>
           </div>
