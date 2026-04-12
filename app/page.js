@@ -657,7 +657,7 @@ function HeroSection() {
           className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase mb-8"
           style={{ letterSpacing: '-0.03em', lineHeight: '0.95' }}
         >
-          <span className="text-white">SIGNAL</span>{' '}
+          <span className="neon-text-white text-white">SIGNAL</span>{' '}
           <span className="neon-text text-[#00f0ff]">ZERO</span>
         </motion.h1>
         <motion.p
