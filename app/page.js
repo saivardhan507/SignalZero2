@@ -657,14 +657,14 @@ function HeroSection() {
           className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase mb-8"
           style={{ letterSpacing: '-0.03em', lineHeight: '0.95' }}
         >
-          <span className="text-white">SIGNAL</span>{' '}
+          <span className="neon-text text-[#00f0ff]">SIGNAL</span>{' '}
           <span className="neon-text text-[#00f0ff]">ZERO</span>
         </motion.h1>
         <motion.p
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-base sm:text-lg font-normal text-[#9CA3AF] max-w-[52ch] mx-auto mb-12 leading-[1.6]"
+          className="text-base sm:text-xl font-medium text-gray-200 max-w-[55ch] mx-auto mb-12 leading-[1.6] drop-shadow-sm"
         >
           We engineer intelligent systems that transform raw data into
           competitive advantage. From custom AI agents to real-time
