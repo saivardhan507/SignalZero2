@@ -158,10 +158,10 @@ const CASE_STUDIES = [
 ];
 
 const BUDGET_OPTIONS = [
-  'Under $5k (Consulting Only)',
-  '$5k - $10k',
-  '$10k - $25k',
-  '$25k+',
+  'Under ₹50k (Consulting Only)',
+  '₹50k - ₹1L',
+  '₹1L - ₹5L',
+  '₹5L+',
 ];
 
 const TIMELINE_OPTIONS = ['ASAP', '1-3 Months', '3-6 Months', 'Just Exploring'];
