@@ -61,11 +61,7 @@ export default function ModelViewer({ src, alt, autoRotate = true, className = "
         <div className="text-[10px] text-white/60 font-bold tracking-widest">{alt}</div>
       </div>
 
-      <div className="absolute top-6 right-6 pointer-events-none opacity-40">
-        <div className="flex items-center gap-2">
-            <span className="text-[9px] text-white/50 font-mono tracking-widest">DRAG TO ROTATE • PINCH TO ZOOM</span>
-        </div>
-      </div>
+
     </div>
   );
 }
