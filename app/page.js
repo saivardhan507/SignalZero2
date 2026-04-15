@@ -1325,14 +1325,23 @@ function CaseStudyCard({ cs, index }) {
   });
 
   const smoothScroll = useSpring(scrollYProgress, {
-    stiffness: 40,
-    damping: 15,
+    stiffness: 100,
+    damping: 30,
     restDelta: 0.001
   });
   
   const rotateZ = useTransform(smoothScroll, [0, 1], [-2, 2]);
   const yOffset = useTransform(smoothScroll, [0, 0.5, 1], [15, 0, -15]);
-  const opacity = useTransform(smoothScroll, [0, 0.2, 0.8, 1], [0.5, 1, 1, 0.5]);
+  const opacity = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [0.3, 1, 1, 0.3]);
+  const PARALLAX_VECTORS = [
+    { x: 45, y: 30 },
+    { x: -35, y: -40 },
+    { x: 30, y: -35 },
+    { x: -40, y: 45 },
+  ];
+  const vector = PARALLAX_VECTORS[index % PARALLAX_VECTORS.length];
+  const xTransform = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [-vector.x, 0, 0, vector.x]);
+  const yParallax = useTransform(smoothScroll, [0, 0.15, 0.85, 1], [-vector.y, 0, 0, vector.y]);
 
   useEffect(() => {
     let interval;
@@ -1499,10 +1508,7 @@ function CaseStudyCard({ cs, index }) {
   return (
     <motion.div
       ref={ref}
-      initial={{ opacity: 0, y: 100 }}
-      whileInView={{ opacity: 1, y: 0 }}
-      viewport={{ margin: '-100px', once: true }}
-      transition={{ duration: 0.8, ease: "easeOut" }}
+      style={{ x: xTransform, y: yParallax, opacity: opacity }}
       className="glass rounded-2xl border border-white/5 overflow-hidden w-full relative z-10"
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[600px]">
@@ -1580,8 +1586,11 @@ function CaseStudyCard({ cs, index }) {
 // ===== CASE STUDIES SECTION =====
 function CaseStudiesSection() {
   return (
-    <section id="case-studies" className="py-32 sm:py-40 px-6 relative overflow-hidden">
-      <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px]" />
+    <section id="case-studies" className="py-32 sm:py-40 px-6 relative">
+      {/* Background glow wrapped to prevent overflow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px]" />
+      </div>
       <div className="max-w-7xl mx-auto">
         <AnimatedSection className="text-center mb-20">
           <Badge variant="outline" className="mb-4 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
