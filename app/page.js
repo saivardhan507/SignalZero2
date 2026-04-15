@@ -237,85 +237,17 @@ function SignalWaveCanvas() {
     const cosT = Math.cos(TILT);
     const sinT = Math.sin(TILT);
 
-    class Particle {
-      constructor(x, y) {
-        this.x = x;
-        this.y = y;
-        const angle = Math.random() * Math.PI * 2;
-        const speed = Math.random() * 1.5 + 0.5; // Slower, continuous speed
-        this.vx = Math.cos(angle) * speed;
-        this.vy = Math.sin(angle) * speed;
-        this.alpha = Math.random() * 0.5 + 0.5; // Keep them visible
-        this.size = Math.random() * 3 + 1; // scale to simulate depth
-      }
-      update(canvasWidth, canvasHeight) {
-        this.x += this.vx;
-        this.y += this.vy;
-
-        // Wrap around edges to keep flowing across the hero section
-        if (this.x < 0) this.x = canvasWidth;
-        if (this.x > canvasWidth) this.x = 0;
-        if (this.y < 0) this.y = canvasHeight;
-        if (this.y > canvasHeight) this.y = 0;
-      }
-      draw(ctx) {
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.shadowBlur = 10;
-        ctx.shadowColor = '#ffffff';
-        ctx.fillStyle = `rgba(255, 255, 255, ${this.alpha})`;
-        ctx.beginPath();
-        ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-        ctx.fill();
-        ctx.restore();
-      }
-    }
-
-    let particles = [];
-    let isHovering = false;
-    let bloomTriggered = false;
-
-    // Pre-initialize ambient background particles that flow globally
-    const initAmbientParticles = (width, height) => {
-      const p = [];
-      const count = 60; // Enough particle density without cluttering
-      for (let i = 0; i < count; i++) {
-        p.push(new Particle(Math.random() * width, Math.random() * height));
-      }
-      return p;
-    };
-
     const resize = () => {
       canvas.width = window.innerWidth;
       canvas.height = window.innerHeight;
-      if (particles.length === 0) {
-        particles = initAmbientParticles(canvas.width, canvas.height);
-      }
     };
     resize();
 
     const handleMouse = (e) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
-      if (!isHovering) {
-        isHovering = true;
-        if (!bloomTriggered) {
-          bloomTriggered = true;
-          // Subtly inject new particles at the origin to create a controlled bloom
-          const burstCount = 30;
-          for (let i = 0; i < burstCount; i++) {
-            particles.push(new Particle(canvas.width / 2, canvas.height / 2));
-            // Cap max particles to prevent overcrowding
-            if (particles.length > 150) {
-              particles.shift();
-            }
-          }
-        }
-      }
     };
     const handleLeave = () => {
       mouseRef.current = { x: -9999, y: -9999 };
-      isHovering = false;
-      bloomTriggered = false; // Reset bloom trigger on leave
     };
 
     window.addEventListener('resize', resize);
@@ -497,37 +429,7 @@ function SignalWaveCanvas() {
         ctx.lineWidth = Math.max(0.5, 1.8 * rowData[0].scale);
         ctx.stroke();
 
-        // Data points with glow
-        ctx.save();
-        ctx.globalCompositeOperation = 'lighter';
-        for (let c = 1; c < COLS - 1; c += 2) {
-          const p = rowData[c];
-          const intensity = Math.abs(p.waveY / AMPLITUDE);
-          const ptSize = (0.8 + intensity * 1.5) * p.scale;
-
-          if (ptSize < 0.3 || p.opacity < 0.05) continue;
-
-          // Outer glow
-          const glowR = ptSize * 5;
-          const grad = ctx.createRadialGradient(p.sx, p.sy, 0, p.sx, p.sy, glowR);
-          // Peak = white glow, rest = cyan
-          const wR = Math.round(intensity * 200);
-          const wG = Math.round(220 + intensity * 35);
-          grad.addColorStop(0, `rgba(${wR}, ${wG}, 255, ${rowOp * 0.25 * (0.3 + intensity)})`);
-          grad.addColorStop(0.4, `rgba(0, 180, 255, ${rowOp * 0.06})`);
-          grad.addColorStop(1, 'rgba(0, 100, 255, 0)');
-          ctx.fillStyle = grad;
-          ctx.fillRect(p.sx - glowR, p.sy - glowR, glowR * 2, glowR * 2);
-
-          // Core dot
-          ctx.beginPath();
-          ctx.arc(p.sx, p.sy, Math.max(0.4, ptSize * 0.6), 0, Math.PI * 2);
-          const coreR = Math.round(100 + intensity * 155);
-          const coreG = Math.round(230 + intensity * 25);
-          ctx.fillStyle = `rgba(${coreR}, ${coreG}, 255, ${rowOp * (0.6 + intensity * 0.4)})`;
-          ctx.fill();
-        }
-        ctx.restore();
+        // Data points removed to look clean
       }
 
       // 3. Cursor "zero zone" indicator
@@ -569,27 +471,7 @@ function SignalWaveCanvas() {
         ctx.stroke();
       }
 
-      // 4. Ambient floating particles (sparse, for depth)
-      ctx.save();
-      ctx.globalCompositeOperation = 'lighter';
-      for (let i = 0; i < 25; i++) {
-        const px = ((Math.sin(time * 0.3 + i * 7.3) + 1) / 2) * W;
-        const py = ((Math.cos(time * 0.2 + i * 4.1) + 1) / 2) * H;
-        const pSize = (Math.sin(time + i * 2) + 1) * 1.2 + 0.3;
-        const pOp = (Math.sin(time * 0.5 + i * 3) + 1) * 0.08 + 0.02;
-        ctx.beginPath();
-        ctx.arc(px, py, pSize, 0, Math.PI * 2);
-        ctx.fillStyle = `rgba(0, 220, 255, ${pOp})`;
-        ctx.fill();
-      }
-      ctx.restore();
-
-      // 5. Active dispersion particles (bloom effect on hover)
-      for (let i = particles.length - 1; i >= 0; i--) {
-        const p = particles[i];
-        p.update(canvas.width, canvas.height);
-        p.draw(ctx);
-      }
+      // 4. Ambient and active particles removed for clean look
 
       animRef.current = requestAnimationFrame(animate);
     }
@@ -604,7 +486,7 @@ function SignalWaveCanvas() {
     };
   }, []);
 
-  return <canvas ref={canvasRef} className="absolute inset-0 z-0" />;
+  return <canvas ref={canvasRef} className="absolute inset-0 z-0 pointer-events-none" />;
 }
 
 // ===== 3D TILT CARD =====
@@ -713,12 +595,12 @@ function Navigation() {
           >
             <div className="px-6 py-4 flex flex-col gap-4">
               {links.map(link => (
-                <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="text-gray-300 hover:text-[#00f0ff] transition-colors py-2">
+                <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="text-gray-300 active:text-[#00f0ff] transition-colors py-3 block w-full cursor-pointer">
                   {link.label}
                 </a>
               ))}
-              <a href="#discovery" onClick={() => setMenuOpen(false)}>
-                <Button className="bg-[#00f0ff] text-black hover:bg-[#00d4e0] w-full rounded-full">Start a Project</Button>
+              <a href="#discovery" onClick={() => setMenuOpen(false)} className="block w-full mt-2">
+                <Button className="bg-[#00f0ff] text-black active:bg-[#00d4e0] w-full rounded-full cursor-pointer">Start a Project</Button>
               </a>
             </div>
           </motion.div>
