@@ -595,11 +595,19 @@ function Navigation() {
           >
             <div className="px-6 py-4 flex flex-col gap-4">
               {links.map(link => (
-                <a key={link.href} href={link.href} onClick={() => setMenuOpen(false)} className="text-gray-300 active:text-[#00f0ff] transition-colors py-3 block w-full cursor-pointer">
+                <a key={link.href} href={link.href} onClick={(e) => {
+                  e.preventDefault();
+                  setMenuOpen(false);
+                  setTimeout(() => { window.location.hash = link.href; }, 50);
+                }} className="text-gray-300 active:text-[#00f0ff] transition-colors py-3 block w-full cursor-pointer">
                   {link.label}
                 </a>
               ))}
-              <a href="#discovery" onClick={() => setMenuOpen(false)} className="block w-full mt-2">
+              <a href="#discovery" onClick={(e) => {
+                e.preventDefault();
+                setMenuOpen(false);
+                setTimeout(() => { window.location.hash = '#discovery'; }, 50);
+              }} className="block w-full mt-2">
                 <Button className="bg-[#00f0ff] text-black active:bg-[#00d4e0] w-full rounded-full cursor-pointer">Start a Project</Button>
               </a>
             </div>
