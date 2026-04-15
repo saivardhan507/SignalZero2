@@ -963,9 +963,10 @@ function OurProcessSection() {
         </div>
 
         {/* Desktop Flowchart - Compact 3x2 Grid with Distinct Signals */}
-        <div className="hidden md:flex flex-1 flex-col items-center justify-center relative max-w-[1200px] mx-auto w-full mt-4 h-[700px]">
+        <div className="hidden lg:flex flex-1 w-full overflow-x-auto pb-8 scrollbar-hide">
+          <div className="flex flex-col items-center justify-center relative w-[1200px] min-w-[1200px] mx-auto mt-4 h-[700px]">
 
-          {/* Background Circuit Traces */}
+            {/* Background Circuit Traces */}
           <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 700">
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
@@ -1112,10 +1113,11 @@ function OurProcessSection() {
               ))}
             </div>
           </div>
+          </div>
         </div>
 
         {/* Mobile Flowchart - Full Screen Vertical */}
-        <div className="md:hidden">
+        <div className="lg:hidden">
           <div className="relative space-y-6">
             {/* SVG curves for mobile */}
             <svg className="absolute inset-0 w-full pointer-events-none" style={{ height: 'auto' }}>
