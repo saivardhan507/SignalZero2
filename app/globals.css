@@ -46,6 +46,24 @@ html {
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
+  
+  ::selection {
+    background: rgba(0, 240, 255, 0.2);
+    color: #e2e8f0;
+  }
+  
+  ::-moz-selection {
+    background: rgba(0, 240, 255, 0.2);
+    color: #e2e8f0;
+  }
+  
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-white font-bold tracking-tight leading-tight;
+  }
+  
+  p, span, div {
+    @apply leading-[1.6];
+  }
 }
 
 @keyframes float {

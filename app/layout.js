@@ -1,5 +1,4 @@
 import './globals.css';
-import ModelViewerInitializer from '@/components/ModelViewerInitializer';
 
 export const metadata = {
   title: 'Signal Zero | Integrated AI & Systems Engineering Agency',
@@ -14,9 +13,9 @@ export default function RootLayout({ children }) {
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
         <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet" />
+        <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.4.0/model-viewer.min.js"></script>
       </head>
       <body className="antialiased">
-        <ModelViewerInitializer />
         {children}
       </body>
     </html>
