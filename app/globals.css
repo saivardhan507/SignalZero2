@@ -210,3 +210,19 @@ html {
   background: rgba(0, 240, 255, 0.3);
   border-radius: 2px;
 }
+
+/* Custom horizontal scrollbar for flowchart */
+.custom-scrollbar-flowchart::-webkit-scrollbar {
+  height: 8px;
+}
+.custom-scrollbar-flowchart::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.02);
+  border-radius: 4px;
+}
+.custom-scrollbar-flowchart::-webkit-scrollbar-thumb {
+  background: rgba(0, 240, 255, 0.15);
+  border-radius: 4px;
+}
+.custom-scrollbar-flowchart::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 240, 255, 0.3);
+}

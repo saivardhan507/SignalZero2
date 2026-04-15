@@ -963,7 +963,7 @@ function OurProcessSection() {
         </div>
 
         {/* Desktop Flowchart - Compact 3x2 Grid with Distinct Signals */}
-        <div className="hidden lg:block w-full max-w-[1200px] mx-auto overflow-x-auto pb-8 scrollbar-hide">
+        <div className="hidden lg:block w-full max-w-[1200px] mx-auto overflow-x-auto pb-6 custom-scrollbar-flowchart">
           <div className="flex flex-col items-center justify-center relative w-[1200px] min-w-[1200px] mt-4 h-[700px]">
 
             {/* Background Circuit Traces */}
