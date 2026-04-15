@@ -962,12 +962,12 @@ function OurProcessSection() {
           <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">Six orchestrated steps connecting your concept to a thriving product.</p>
         </div>
 
-        {/* Desktop Flowchart - Compact 3x2 Grid with Distinct Signals */}
-        <div className="hidden lg:block w-full max-w-[1200px] mx-auto overflow-x-auto pb-6 custom-scrollbar-flowchart">
-          <div className="flex flex-col items-center justify-center relative w-[1200px] min-w-[1200px] mt-4 h-[700px]">
+        {/* Desktop Flowchart - Fluid Aspect Ratio Layout */}
+        <div className="hidden lg:flex w-full max-w-[1200px] mx-auto mt-8 flex-col items-center justify-center">
+          <div className="relative w-full aspect-[1200/700] max-h-[700px]">
 
             {/* Background Circuit Traces */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="xMidYMid slice" viewBox="0 0 1200 700">
+          <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1200 700">
             <defs>
               <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
                 <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
@@ -1062,52 +1062,52 @@ function OurProcessSection() {
             </g>
           </svg>
 
-          {/* Cards Grid - 3x2 layout with distinct boundaries */}
-          <div className="relative z-10 w-full h-[600px] my-auto pt-10">
+          {/* Cards Grid - Proportional Boundaries Mapping to SVG */}
+          <div className="absolute inset-0 w-full h-full flex flex-col justify-center px-[0%] pt-[6.5%]">
             {/* Top Row: Cards 1, 2, 3 */}
-            <div className="flex justify-between w-full h-[240px]">
+            <div className="flex justify-between w-full h-[34.2%]">
               {steps.slice(0, 3).map((step, idx) => (
-                <motion.div key={step.id} className="relative w-[260px] h-full group"
+                <motion.div key={step.id} className="relative w-[21.66%] h-full group"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ margin: '-40px' }}
                   transition={{ duration: 0.5, delay: idx * 0.1 }}
                 >
-                  <div className="glass rounded-xl p-5 border-2 text-center h-full flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl hover:bg-black/40 transition-colors duration-300"
+                  <div className="glass rounded-xl p-3 lg:p-4 xl:p-5 border-2 text-center h-full flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl hover:bg-black/40 transition-colors duration-300"
                     style={{ borderColor: `${step.color}40`, boxShadow: `0 10px 30px -10px ${step.color}20` }}>
-                    <div className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 relative"
+                    <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-full mx-auto mb-2 lg:mb-3 flex items-center justify-center text-lg lg:text-2xl group-hover:scale-110 transition-transform duration-300 relative shrink-0"
                       style={{ background: `${step.color}15`, border: `2px solid ${step.color}80`, color: step.color, boxShadow: `0 0 20px ${step.color}40` }}>
                       {step.icon}
                     </div>
-                    <div className="text-[10px] font-mono font-bold text-gray-500 mb-1 tracking-widest uppercase">STEP {step.id}</div>
-                    <h4 className="text-base font-bold text-white mb-2">{step.title}</h4>
-                    <p className="text-xs text-gray-400 leading-snug">{step.description}</p>
+                    <div className="text-[9px] lg:text-[10px] font-mono font-bold text-gray-500 mb-1 tracking-widest uppercase">STEP {step.id}</div>
+                    <h4 className="text-sm lg:text-base font-bold text-white mb-1 lg:mb-2 leading-tight">{step.title}</h4>
+                    <p className="text-[9px] lg:text-[10px] xl:text-xs text-gray-400 leading-snug">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
             </div>
 
-            {/* Huge explicit inter-row spacing for the trail and nexus node to breathe */}
-            <div className="h-[120px] w-full" />
+            {/* Proportional inter-row spacing for the trail */}
+            <div className="h-[17.1%] w-full" />
 
             {/* Bottom Row: Cards 4, 5, 6 */}
-            <div className="flex justify-between w-full h-[240px]">
+            <div className="flex justify-between w-full h-[34.2%]">
               {steps.slice(3).map((step, idx) => (
-                <motion.div key={step.id} className="relative w-[260px] h-full group"
+                <motion.div key={step.id} className="relative w-[21.66%] h-full group"
                   initial={{ opacity: 0, y: 20 }}
                   whileInView={{ opacity: 1, y: 0 }}
                   viewport={{ margin: '-40px' }}
                   transition={{ duration: 0.5, delay: (idx + 3) * 0.1 }}
                 >
-                  <div className="glass rounded-xl p-5 border-2 text-center h-full flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl hover:bg-black/40 transition-colors duration-300"
+                  <div className="glass rounded-xl p-3 lg:p-4 xl:p-5 border-2 text-center h-full flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl hover:bg-black/40 transition-colors duration-300"
                     style={{ borderColor: `${step.color}40`, boxShadow: `0 10px 30px -10px ${step.color}20` }}>
-                    <div className="w-14 h-14 rounded-full mx-auto mb-3 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform duration-300 relative"
+                    <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-full mx-auto mb-2 lg:mb-3 flex items-center justify-center text-lg lg:text-2xl group-hover:scale-110 transition-transform duration-300 relative shrink-0"
                       style={{ background: `${step.color}15`, border: `2px solid ${step.color}80`, color: step.color, boxShadow: `0 0 20px ${step.color}40` }}>
                       {step.icon}
                     </div>
-                    <div className="text-[10px] font-mono font-bold text-gray-500 mb-1 tracking-widest uppercase">STEP {step.id}</div>
-                    <h4 className="text-base font-bold text-white mb-2">{step.title}</h4>
-                    <p className="text-xs text-gray-400 leading-snug">{step.description}</p>
+                    <div className="text-[9px] lg:text-[10px] font-mono font-bold text-gray-500 mb-1 tracking-widest uppercase">STEP {step.id}</div>
+                    <h4 className="text-sm lg:text-base font-bold text-white mb-1 lg:mb-2 leading-tight">{step.title}</h4>
+                    <p className="text-[9px] lg:text-[10px] xl:text-xs text-gray-400 leading-snug">{step.description}</p>
                   </div>
                 </motion.div>
               ))}
