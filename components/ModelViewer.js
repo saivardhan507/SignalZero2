@@ -10,7 +10,7 @@ export default function ModelViewer({ src, alt, autoRotate = true, className = "
   const modelRef = useRef(null);
 
   return (
-    <div className={`relative w-full aspect-[4/3] sm:aspect-video lg:aspect-auto lg:min-h-[450px] rounded-3xl overflow-hidden glass border border-white/5 shadow-xl ${className}`}>
+    <div className={`relative w-full aspect-video min-h-[300px] md:min-h-[350px] lg:min-h-[450px] rounded-3xl overflow-hidden glass border border-white/5 shadow-2xl ${className}`}>
       <model-viewer
         ref={modelRef}
         src={src}
@@ -18,7 +18,6 @@ export default function ModelViewer({ src, alt, autoRotate = true, className = "
         auto-rotate={autoRotate ? "true" : undefined}
         rotation-per-second="25deg"
         camera-controls
-        bounds="tight"
         interaction-prompt="auto"
         shadow-intensity="2"
         shadow-softness="1"
