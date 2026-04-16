@@ -6,6 +6,12 @@ export const metadata = {
   keywords: 'AI agency, systems engineering, RAG agents, fintech, full-stack development, 3D modeling',
 };
 
+export const viewport = {
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export default function RootLayout({ children }) {
   return (
     <html lang="en">

@@ -725,7 +725,7 @@ function HeroSection() {
 // ===== ABOUT US SECTION =====
 function AboutUsSection() {
   return (
-    <section id="about" className="py-32 sm:py-40 px-6 relative border-t border-white/5 overflow-hidden">
+    <section id="about" className="py-32 sm:py-40 px-4 sm:px-6 relative border-t border-white/5 overflow-hidden">
       {/* High-tech wave pattern background */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.15)_0%,transparent_70%)]" />
@@ -754,7 +754,7 @@ function AboutUsSection() {
             </div>
 
             {/* Main Heading */}
-            <h3 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white mb-16 leading-[1.2] max-w-4xl tracking-tight" style={{ textShadow: "0 0 40px rgba(0,240,255,0.4)" }}>
+            <h3 className="text-2xl sm:text-3xl md:text-5xl font-extrabold text-white mb-16 leading-[1.2] max-w-4xl tracking-tight" style={{ textShadow: "0 0 40px rgba(0,240,255,0.4)" }}>
               We are a hybrid software company built by a team of obsessively detailed professionals.
             </h3>
 
@@ -795,7 +795,7 @@ function AboutUsSection() {
 // ===== SERVICES SECTION =====
 function ServicesSection() {
   return (
-    <section id="services" className="py-32 sm:py-40 px-6 relative">
+    <section id="services" className="py-32 sm:py-40 px-4 sm:px-6 relative">
       <div className="absolute top-0 right-0 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px]" />
       <div className="max-w-7xl mx-auto">
         <AnimatedSection className="text-center mb-20">
@@ -1397,9 +1397,9 @@ function CaseStudyCard({ cs, index }) {
     >
       <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[min(37.5rem,80vh)]">
         {/* Content Panel */}
-        <div className="p-8 sm:p-12 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-center">
+        <div className="p-6 sm:p-12 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-center">
           <div className="flex items-center justify-between mb-8">
-            <h3 className="text-3xl font-bold tracking-tight text-white leading-tight" style={{ textShadow: '0 0 30px rgba(0,240,255,0.5), 0 0 60px rgba(0,240,255,0.3)' }}>{cs.title}</h3>
+            <h3 className="text-2xl sm:text-3xl font-bold tracking-tight text-white leading-tight" style={{ textShadow: '0 0 30px rgba(0,240,255,0.5), 0 0 60px rgba(0,240,255,0.3)' }}>{cs.title}</h3>
             {/* Logos fully removed per user request */}
           </div>
 
@@ -1434,7 +1434,7 @@ function CaseStudyCard({ cs, index }) {
         </div>
 
         {/* Chart Panel */}
-        <div className="p-8 sm:p-12 relative flex flex-col justify-center min-h-[400px]">
+        <div className="p-6 sm:p-12 relative flex flex-col justify-center min-h-[400px]">
           <div className="w-full">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-mono text-gray-500 tracking-wide uppercase" style={{ textShadow: '0 0 15px rgba(0,240,255,0.4)' }}>
@@ -1470,7 +1470,7 @@ function CaseStudyCard({ cs, index }) {
 // ===== CASE STUDIES SECTION =====
 function CaseStudiesSection() {
   return (
-    <section id="case-studies" className="py-32 sm:py-40 px-6 relative">
+    <section id="case-studies" className="py-32 sm:py-40 px-4 sm:px-6 relative">
       {/* Background glow wrapped to prevent overflow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
         <div className="absolute bottom-0 left-0 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px]" />
@@ -1515,7 +1515,7 @@ function FounderSection() {
       ref={containerRef}
       style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }}
       id="founder"
-      className="py-32 sm:py-40 px-6 relative"
+      className="py-32 sm:py-40 px-4 sm:px-6 relative"
     >
       <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
       <div className="max-w-6xl mx-auto">
@@ -1542,8 +1542,8 @@ function FounderSection() {
                 </div>
               </div>
               {/* Bio */}
-              <div className="lg:col-span-3 p-8 sm:p-10 flex flex-col justify-center">
-                <h3 className="text-3xl font-bold text-white mb-1 tracking-tight leading-tight">Eppa Sai Vardhan Reddy</h3>
+              <div className="lg:col-span-3 p-6 sm:p-10 flex flex-col justify-center">
+                <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1 tracking-tight leading-tight">Eppa Sai Vardhan Reddy</h3>
                 <p className="text-[#00f0ff] font-mono mb-5 text-xs tracking-[0.05em] uppercase font-semibold">Founder & Chief Architect</p>
                 <p className="text-gray-300 leading-[1.6] mb-8 max-w-[65ch] text-base">
                   Adaptable and results-oriented Data Science and AI professional with deep expertise in machine learning, NLP, and predictive modeling.
@@ -1688,7 +1688,7 @@ function DiscoveryForm() {
   }
 
   return (
-    <motion.section id="discovery" ref={containerRef} style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }} className="py-32 sm:py-40 px-6 relative">
+    <motion.section id="discovery" ref={containerRef} style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }} className="py-32 sm:py-40 px-4 sm:px-6 relative">
       <div className="absolute top-0 left-0 w-[clamp(10rem,25vw,25rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[120px]" />
       <div className="max-w-3xl mx-auto">
         <AnimatedSection className="text-center mb-14">
@@ -2215,7 +2215,7 @@ function CookieBanner() {
 // ===== FOOTER =====
 function Footer() {
   return (
-    <footer className="py-16 px-6 border-t border-white/5">
+    <footer className="py-16 px-4 sm:px-6 border-t border-white/5">
       <div className="max-w-7xl mx-auto">
         <div className="grid grid-cols-1 md:grid-cols-4 gap-10 mb-12">
           <div className="md:col-span-2">
