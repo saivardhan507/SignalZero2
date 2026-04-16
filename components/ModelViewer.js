@@ -10,7 +10,7 @@ export default function ModelViewer({ src, alt, autoRotate = true, className = "
   const modelRef = useRef(null);
 
   return (
-    <div className={`relative w-full aspect-video min-h-[300px] md:min-h-[350px] lg:min-h-[450px] rounded-3xl overflow-hidden glass border border-white/5 shadow-2xl ${className}`}>
+    <div className={`relative w-full aspect-video min-h-[300px] md:min-h-[350px] lg:min-h-[450px] rounded-3xl overflow-hidden glass border border-white/5 shadow-2xl ${className}`} style={{ transform: 'translateZ(0)', WebkitMaskImage: '-webkit-radial-gradient(white, black)' }}>
       <model-viewer
         ref={modelRef}
         src={src}
