@@ -1354,8 +1354,8 @@ function CaseStudyCard({ cs, index }) {
     if (cs.chartType === '3d') {
       const currentModel = cs.models[activeModelIndex];
       return (
-        <div className="flex flex-col gap-6 w-full h-full min-h-[min(28rem,50vh)]">
-          <div className="flex-1 w-full h-full">
+        <div className="flex flex-col gap-6 w-full">
+          <div className="w-full relative">
             <ModelViewer
               src={currentModel.src}
               alt={currentModel.title}
@@ -1434,8 +1434,8 @@ function CaseStudyCard({ cs, index }) {
         </div>
 
         {/* Chart Panel */}
-        <div className="p-6 sm:p-12 relative flex flex-col justify-center min-h-[400px]">
-          <div className="w-full">
+        <div className="p-6 sm:p-12 relative flex flex-col justify-center sm:justify-start lg:justify-center min-h-[400px] h-full">
+          <div className="w-full my-auto sm:my-0 lg:my-auto">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-mono text-gray-500 tracking-wide uppercase" style={{ textShadow: '0 0 15px rgba(0,240,255,0.4)' }}>
                 {cs.id === 1 ? (activeChartIndex === 0 ? 'Performance Metrics' : 'Model Comparison') :
@@ -1456,7 +1456,7 @@ function CaseStudyCard({ cs, index }) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ margin: '-50px' }}
               transition={{ duration: 0.5 }}
-              className={`${cs.chartType === '3d' ? 'w-full h-full min-h-[min(31rem,50vh)]' : 'min-h-[min(15rem,30vh)] flex items-center justify-center'}`}
+              className={`${cs.chartType === '3d' ? 'w-full' : 'min-h-[min(15rem,30vh)] flex items-center justify-center'}`}
             >
               {renderChart()}
             </motion.div>
