@@ -1436,8 +1436,8 @@ function CaseStudyCard({ cs, index }) {
         </div>
 
         {/* Chart Panel */}
-        <div className="p-6 sm:p-12 relative flex flex-col justify-start lg:justify-center min-h-[400px]">
-          <div className="w-full mt-0 lg:my-auto">
+        <div className="p-6 sm:p-12 relative flex flex-col min-h-[400px]">
+          <div className="w-full">
             <div className="flex items-center justify-between mb-4">
               <h4 className="text-sm font-mono text-gray-500 tracking-wide uppercase" style={{ textShadow: '0 0 15px rgba(0,240,255,0.4)' }}>
                 {cs.id === 1 ? (activeChartIndex === 0 ? 'Performance Metrics' : 'Model Comparison') :
