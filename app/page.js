@@ -549,7 +549,7 @@ function Navigation() {
   ];
 
   return (
-    <nav className={`fixed top-0 left-0 right-0 z-50 transition-all duration-500 ${scrolled ? 'glass-strong py-3' : 'py-5'}`}>
+    <nav className={`sticky top-0 z-50 w-full transition-all duration-500 ${scrolled ? 'glass-strong py-3' : 'py-5'} pt-safe`}>
       {/* Scroll Progress Bar */}
       <div
         className="absolute top-0 left-0 h-[3px] z-[60]"
@@ -625,19 +625,11 @@ function HeroSection() {
   const opacityFade = useTransform(scrollY, [0, 400], [1, 0]);
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
-      {/* Deep dark gradient background */}
-      <div className="absolute inset-0 bg-gradient-to-b from-[#060610] via-[#0a0a1a] to-[#0a0a0f]" />
-      {/* Radial ambient glows */}
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[900px] h-[900px] bg-[#00f0ff] rounded-full opacity-[0.025] blur-[150px]" />
-      <div className="absolute top-1/4 right-1/4 w-[500px] h-[500px] bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
-      <div className="absolute bottom-1/4 left-1/3 w-[400px] h-[400px] bg-[#00f0ff] rounded-full opacity-[0.015] blur-[100px]" />
-      {/* Cinematic Signal Wave Canvas */}
-      <SignalWaveCanvas />
+    <section className="relative flex-1 flex flex-col items-center justify-center w-full z-10 py-12 lg:py-20 flex-shrink-0">
       {/* Content */}
-      <div className="relative z-10 text-center px-6 max-w-5xl mx-auto pointer-events-none pt-10">
+      <div className="relative z-10 text-center px-6 w-full max-w-5xl mx-auto pointer-events-none flex flex-col items-center justify-center">
         <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
-          <Badge variant="outline" className="mb-8 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-5 py-1.5 text-[11px] tracking-[0.2em] uppercase rounded-full pointer-events-auto font-medium">
+          <Badge variant="outline" className="mb-6 lg:mb-8 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-4 sm:px-5 py-1.5 text-[clamp(0.6rem,1.2vw,0.7rem)] tracking-[0.2em] uppercase rounded-full pointer-events-auto font-medium">
             <Sparkles className="w-3.5 h-3.5 mr-2" /> Integrated AI & Systems Engineering Agency
           </Badge>
         </motion.div>
@@ -645,8 +637,8 @@ function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.4 }}
-          className="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-black uppercase mb-8 flex justify-center items-center gap-4"
-          style={{ letterSpacing: '-0.03em', lineHeight: '0.95', opacity: opacityFade }}
+          className="text-[clamp(3.5rem,10vw,8rem)] font-black uppercase mb-6 sm:mb-8 flex justify-center items-center gap-3 sm:gap-4 flex-wrap"
+          style={{ letterSpacing: '-0.03em', lineHeight: '1.05', opacity: opacityFade }}
         >
           <motion.span
             style={{ x: useTransform(splitX, v => -v) }}
@@ -665,7 +657,7 @@ function HeroSection() {
           initial={{ opacity: 0, y: 30 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-base sm:text-xl font-medium text-gray-400 max-w-[55ch] mx-auto mb-12 leading-[1.6] pointer-events-auto cursor-default"
+          className="text-[clamp(1rem,3vw,1.25rem)] font-medium text-gray-400 max-w-[55ch] mx-auto mb-10 lg:mb-12 leading-[1.6] pointer-events-auto cursor-default"
         >
           {"We engineer intelligent systems that transform raw data into competitive advantage. From custom AI agents to real-time analytics — we build what others can't.".split(" ").map((word, i) => (
             <motion.span
@@ -700,7 +692,7 @@ function HeroSection() {
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1, delay: 1.2 }}
-          className="mt-24 grid grid-cols-2 sm:grid-cols-4 gap-8 max-w-3xl mx-auto"
+          className="mt-16 lg:mt-24 grid grid-cols-2 sm:grid-cols-4 gap-6 lg:gap-8 max-w-3xl w-full mx-auto pointer-events-auto"
         >
           {[
             { value: '10+', label: 'CLIENTS' },
@@ -710,7 +702,7 @@ function HeroSection() {
           ].map((stat, i) => (
             <div key={i} className="text-center">
               <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{stat.value}</div>
-              <div className="text-[11px] text-[#64748b] mt-2 tracking-[0.15em] font-medium">{stat.label}</div>
+              <div className="text-[clamp(0.6rem,1.2vw,0.7rem)] text-[#64748b] mt-2 tracking-[0.15em] font-medium">{stat.label}</div>
             </div>
           ))}
         </motion.div>
@@ -741,8 +733,8 @@ function AboutUsSection() {
       </div>
 
       {/* Radiant glow spots */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[600px] h-[600px] bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -804,7 +796,7 @@ function AboutUsSection() {
 function ServicesSection() {
   return (
     <section id="services" className="py-32 sm:py-40 px-6 relative">
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px]" />
+      <div className="absolute top-0 right-0 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px]" />
       <div className="max-w-7xl mx-auto">
         <AnimatedSection className="text-center mb-20">
           <Badge variant="outline" className="mb-4 border-[#8b5cf6]/30 text-[#8b5cf6] bg-[#8b5cf6]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
@@ -1362,7 +1354,7 @@ function CaseStudyCard({ cs, index }) {
     if (cs.chartType === '3d') {
       const currentModel = cs.models[activeModelIndex];
       return (
-        <div className="flex flex-col gap-6 w-full h-full min-h-[450px]">
+        <div className="flex flex-col gap-6 w-full h-full min-h-[min(28rem,50vh)]">
           <div className="flex-1 w-full h-full">
             <ModelViewer
               src={currentModel.src}
@@ -1403,7 +1395,7 @@ function CaseStudyCard({ cs, index }) {
       style={{ x: xTransform, y: yParallax, opacity: opacity }}
       className="glass rounded-2xl border border-white/5 overflow-hidden w-full relative z-10"
     >
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[600px]">
+      <div className="grid grid-cols-1 lg:grid-cols-2 lg:min-h-[min(37.5rem,80vh)]">
         {/* Content Panel */}
         <div className="p-8 sm:p-12 border-b lg:border-b-0 lg:border-r border-white/5 flex flex-col justify-center">
           <div className="flex items-center justify-between mb-8">
@@ -1464,7 +1456,7 @@ function CaseStudyCard({ cs, index }) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ margin: '-50px' }}
               transition={{ duration: 0.5 }}
-              className={`${cs.chartType === '3d' ? 'w-full h-full min-h-[500px]' : 'min-h-[250px] flex items-center justify-center'}`}
+              className={`${cs.chartType === '3d' ? 'w-full h-full min-h-[min(31rem,50vh)]' : 'min-h-[min(15rem,30vh)] flex items-center justify-center'}`}
             >
               {renderChart()}
             </motion.div>
@@ -1481,7 +1473,7 @@ function CaseStudiesSection() {
     <section id="case-studies" className="py-32 sm:py-40 px-6 relative">
       {/* Background glow wrapped to prevent overflow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px]" />
+        <div className="absolute bottom-0 left-0 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px]" />
       </div>
       <div className="max-w-7xl mx-auto">
         <AnimatedSection className="text-center mb-20">
@@ -1525,7 +1517,7 @@ function FounderSection() {
       id="founder"
       className="py-32 sm:py-40 px-6 relative"
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[500px] h-[500px] bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
       <div className="max-w-6xl mx-auto">
         <AnimatedSection className="text-center mb-16">
           <Badge variant="outline" className="mb-4 border-[#ec4899]/30 text-[#ec4899] bg-[#ec4899]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
@@ -1697,7 +1689,7 @@ function DiscoveryForm() {
 
   return (
     <motion.section id="discovery" ref={containerRef} style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }} className="py-32 sm:py-40 px-6 relative">
-      <div className="absolute top-0 left-0 w-[400px] h-[400px] bg-[#00f0ff] rounded-full opacity-[0.02] blur-[120px]" />
+      <div className="absolute top-0 left-0 w-[clamp(10rem,25vw,25rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[120px]" />
       <div className="max-w-3xl mx-auto">
         <AnimatedSection className="text-center mb-14">
           <Badge variant="outline" className="mb-4 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
@@ -2008,7 +2000,7 @@ function ChatWidget() {
       {/* Toggle button */}
       <motion.button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-6 right-6 z-50 w-14 h-14 rounded-full bg-[#00f0ff] text-black flex items-center justify-center shadow-lg shadow-[#00f0ff]/30 hover:scale-110 transition-transform"
+        className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-6 z-50 w-14 h-14 rounded-full bg-[#00f0ff] text-black flex items-center justify-center shadow-lg shadow-[#00f0ff]/30 hover:scale-110 transition-transform"
         whileTap={{ scale: 0.9 }}
       >
         {open ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
@@ -2022,7 +2014,7 @@ function ChatWidget() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 20, scale: 0.95 }}
             transition={{ duration: 0.2 }}
-            className="fixed bottom-24 right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] glass-strong rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
+            className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] glass-strong rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
           >
             {/* Header */}
             <div className="bg-gradient-to-r from-[#00f0ff]/10 to-[#8b5cf6]/10 p-4 border-b border-white/5">
@@ -2118,7 +2110,7 @@ function CookieBanner() {
             initial={{ y: 100, opacity: 0 }}
             animate={{ y: 0, opacity: 1 }}
             exit={{ y: 100, opacity: 0 }}
-            className="fixed bottom-0 left-0 right-0 z-[100] p-4"
+            className="fixed bottom-0 left-0 right-0 z-[100] pt-4 px-4 pb-[calc(1rem+env(safe-area-inset-bottom,0px))]"
           >
             <div className="max-w-4xl mx-auto glass-strong rounded-2xl border border-white/10 p-6">
               {!showDetails ? (
@@ -2275,8 +2267,17 @@ function Footer() {
 export default function Home() {
   return (
     <main className="bg-[#0a0a0f] text-white min-h-screen overflow-x-hidden">
-      <Navigation />
-      <HeroSection />
+      <div className="relative flex flex-col min-h-safe w-full pb-safe">
+        <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-b from-[#060610] via-[#0a0a1a] to-[#0a0a0f]" />
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(20rem,50vw,56rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.025] blur-[150px]" />
+          <div className="absolute top-1/4 right-1/4 w-[clamp(15rem,30vw,31rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
+          <div className="absolute bottom-1/4 left-1/3 w-[clamp(12rem,25vw,25rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.015] blur-[100px]" />
+          <SignalWaveCanvas />
+        </div>
+        <Navigation />
+        <HeroSection />
+      </div>
       <AboutUsSection />
       <ServicesSection />
       <CaseStudiesSection />
