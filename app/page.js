@@ -1,7 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef, useCallback } from 'react';
-import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring } from 'framer-motion';
+import { motion, useInView, AnimatePresence, useScroll, useTransform, useSpring, useReducedMotion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Textarea } from '@/components/ui/textarea';
@@ -22,6 +22,161 @@ import {
   RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis,
   Cell
 } from 'recharts';
+
+
+// ===== CUSTOM RECHARTS ANIMATED COMPONENTS =====
+
+
+const AnimatedCounter = ({ value, delay = 0 }) => {
+  const [count, setCount] = useState(0);
+  const [glow, setGlow] = useState(false);
+  const ref = useRef(null);
+  const inView = useInView(ref, { once: false, amount: 0.3 });
+  const reducedMotion = useReducedMotion();
+
+  // Extract number and suffix ("50+" -> num: 50, suffix: "+", "100%" -> num: 100, suffix: "%")
+  const numMatch = value.match(/\d+/);
+  const suffixMatch = value.match(/\D+$/);
+  const targetNum = numMatch ? parseInt(numMatch[0]) : 0;
+  const suffix = suffixMatch ? suffixMatch[0] : '';
+
+  useEffect(() => {
+    if (reducedMotion) {
+      setCount(targetNum);
+      return;
+    }
+    if (inView) {
+      setGlow(false);
+      let animationFrame;
+      const duration = 1800; // 1.8s
+      const startTime = performance.now() + delay;
+      
+      const step = (currentTime) => {
+        if (currentTime < startTime) {
+          animationFrame = requestAnimationFrame(step);
+          return;
+        }
+        
+        const elapsed = currentTime - startTime;
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(2, -10 * progress); // easeOutExpo
+        setCount(Math.floor(easeProgress * targetNum));
+        
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(step);
+        } else {
+          setCount(targetNum);
+          setGlow(true);
+          setTimeout(() => setGlow(false), 600);
+        }
+      };
+      animationFrame = requestAnimationFrame(step);
+      return () => cancelAnimationFrame(animationFrame);
+    } else {
+      setCount(0);
+      setGlow(false);
+    }
+  }, [inView, targetNum, reducedMotion, delay]);
+
+  return (
+    <div 
+      ref={ref} 
+      className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-1 tabular-nums transition-shadow duration-300"
+      style={{ textShadow: glow ? '0 0 20px rgba(0,229,255,0.8)' : '0 0 0px transparent' }}
+    >
+      {count}{suffix}
+    </div>
+  );
+};
+
+const AnimatedYAxisTick = ({ x, y, payload, inView, reducedMotion }) => {
+  const [val, setVal] = useState(0);
+  useEffect(() => {
+    if (reducedMotion) {
+      setVal(payload.value);
+      return;
+    }
+    if (inView) {
+      let animationFrame;
+      const end = payload.value;
+      const duration = 1200;
+      const startTime = performance.now();
+      
+      const step = (currentTime) => {
+        const elapsed = currentTime - startTime;
+        // EaseOutQuart approximation
+        const progress = Math.min(elapsed / duration, 1);
+        const easeProgress = 1 - Math.pow(1 - progress, 4);
+        setVal(Math.floor(easeProgress * end));
+        if (progress < 1) {
+          animationFrame = requestAnimationFrame(step);
+        }
+      };
+      animationFrame = requestAnimationFrame(step);
+      return () => cancelAnimationFrame(animationFrame);
+    } else {
+      setVal(0);
+    }
+  }, [inView, payload.value, reducedMotion]);
+
+  return <text x={x} y={y} dy={4} textAnchor="end" fill="#64748b" fontSize={11}>{val}</text>;
+};
+
+const CustomBarShape = (props) => {
+  const { x, y, width, height, fill, index, isCyan } = props;
+  const reducedMotion = useReducedMotion();
+  const delay = reducedMotion ? 0 : index * 0.12 + (isCyan ? 0.15 : 0);
+  const duration = reducedMotion ? 0 : (isCyan ? 1.2 : 1.0);
+  
+  if (width == null || height == null || x == null || y == null) return null;
+
+  return (
+    <motion.path
+      d={`M${x},${y+height} L${x+width},${y+height} L${x+width},${y} L${x},${y} Z`}
+      fill={fill}
+      initial={{ scaleY: 0, originY: 1 }}
+      animate={{ scaleY: 1 }}
+      transition={{ duration, delay, ease: [0.16, 1, 0.3, 1] }}
+      style={{
+        filter: isCyan && !reducedMotion ? 'drop-shadow(0 0 12px rgba(0,229,255,0.4))' : 'none',
+        transformOrigin: "bottom"
+      }}
+    />
+  );
+};
+
+function AnimatedEfficiencyChart({ cs }) {
+  const containerRef = useRef(null);
+  const inView = useInView(containerRef, { amount: 0.2, margin: "0px 0px -10% 0px" });
+  const reducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({
+    target: containerRef,
+    offset: ['start end', 'end start']
+  });
+  
+  // Subtle vertical parallax (max 30px offset) mapping scrolled state to Y
+  const parallaxY = useTransform(scrollYProgress, [0, 1], [30, 0]);
+  const yOffset = reducedMotion ? 0 : parallaxY;
+
+  return (
+    <motion.div
+      ref={containerRef}
+      style={{ y: yOffset, willChange: 'transform' }}
+      className="w-full relative"
+    >
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={cs.data} key={inView ? 'active' : 'reset'}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <XAxis dataKey="source" stroke="#64748b" fontSize={11} />
+          <YAxis stroke="#64748b" fontSize={12} tick={(props) => <AnimatedYAxisTick {...props} inView={inView} reducedMotion={reducedMotion} />} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
+          <Tooltip contentStyle={{ background: 'rgba(26, 26, 46, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,240,255,0.5)', borderRadius: '12px', color: '#e2e8f0', boxShadow: '0 0 20px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1)' }} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
+          <Bar dataKey="before" fill="#475569" radius={[4, 4, 0, 0]} name="Before" shape={(props) => <CustomBarShape {...props} isCyan={false} />} isAnimationActive={false} />
+          <Bar dataKey="after" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} name="After" shape={(props) => <CustomBarShape {...props} isCyan={true} />} isAnimationActive={false} />
+        </BarChart>
+      </ResponsiveContainer>
+    </motion.div>
+  );
+}
 
 // ===== CONSTANTS =====
 const SERVICES = [
@@ -243,8 +398,14 @@ function SignalWaveCanvas() {
     };
     resize();
 
+    const isTouch = typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches;
+    let mouseTimeout;
+
     const handleMouse = (e) => {
       mouseRef.current = { x: e.clientX, y: e.clientY };
+      // Safety net: if no mouse movement for 1s, treat as leave (safeguard against stuck states)
+      clearTimeout(mouseTimeout);
+      mouseTimeout = setTimeout(handleLeave, 1000);
     };
     const handleLeave = () => {
       mouseRef.current = { x: -9999, y: -9999 };
@@ -253,6 +414,8 @@ function SignalWaveCanvas() {
     window.addEventListener('resize', resize);
     window.addEventListener('mousemove', handleMouse);
     window.addEventListener('mouseleave', handleLeave);
+    window.addEventListener('touchend', handleLeave);
+    window.addEventListener('touchcancel', handleLeave);
 
     function project(x, y, z) {
       const ry = y * cosT - z * sinT;
@@ -323,7 +486,7 @@ function SignalWaveCanvas() {
 
           // Target: 0 = flat (zero signal), 1 = full wave
           let target;
-          if (dist < FLATTEN_RADIUS) {
+          if (!isTouch && dist < FLATTEN_RADIUS) {
             const t = dist / FLATTEN_RADIUS;
             // Very aggressive flattening near center, edge repulsion bulge
             if (t < 0.5) {
@@ -740,26 +903,37 @@ function HeroSection() {
         </motion.div>
 
         {/* Bento Grid Stats */}
-        <div className="mt-16 lg:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl w-full mx-auto pointer-events-auto relative z-10 px-2 lg:px-0">
+        {/* Bento Grid Stats */}
+        <motion.div 
+          className="mt-16 lg:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl w-full mx-auto pointer-events-auto relative z-10 px-2 lg:px-0"
+          style={{ y: useTransform(scrollY, [0, 800], [0, -40]), willChange: 'transform' }}
+        >
           {statsData.map((stat, i) => (
             <motion.div
               key={i}
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.6, delay: stat.delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: false, amount: 0.3 }}
+              transition={{ duration: 0.6, delay: i * 0.1, ease: [0.25, 0.46, 0.45, 0.94] }}
               className="glass p-6 sm:p-7 transition-all duration-500 group relative overflow-hidden text-left"
             >
               <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[var(--accent-glow)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
               <div className="flex items-center gap-3 mb-4">
-                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:border-[var(--accent-glow)]/30 transition-colors duration-300">
+                <motion.div 
+                  initial={{ scale: 0.6 }}
+                  whileInView={{ scale: 1 }}
+                  viewport={{ once: false, amount: 0.5 }}
+                  transition={{ duration: 0.4, delay: i * 0.1, ease: [0.34, 1.56, 0.64, 1] }}
+                  className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:border-[var(--accent-glow)]/30 transition-colors duration-300"
+                >
                   <stat.icon className="w-5 h-5 text-[var(--accent-glow)]" />
-                </div>
+                </motion.div>
               </div>
-              <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-1 tabular-nums">{stat.value}</div>
+              <AnimatedCounter value={stat.value} delay={i * 150} />
               <div className="text-[10px] sm:text-[11px] text-zinc-400 tracking-[0.2em] font-medium uppercase">{stat.label}</div>
             </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
       
       {/* Scroll indicator */}
@@ -1177,7 +1351,7 @@ function CaseStudyCard({ cs, index }) {
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
             <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
-            <YAxis stroke="#64748b" fontSize={12} />
+            <YAxis stroke="#64748b" fontSize={12} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
             <Tooltip contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }} />
             <Area type="monotone" dataKey="predicted" stroke="var(--accent-primary)" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
             <Area type="monotone" dataKey="actual" stroke="var(--accent-secondary)" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
@@ -1209,7 +1383,7 @@ function CaseStudyCard({ cs, index }) {
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
-              <YAxis stroke="#64748b" fontSize={12} />
+              <YAxis stroke="#64748b" fontSize={12} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
               <Tooltip contentStyle={{ background: 'rgba(26, 26, 46, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,240,255,0.5)', borderRadius: '12px', color: '#e2e8f0', boxShadow: '0 0 20px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1)' }} />
               <Area type="monotone" dataKey="predicted" stroke="var(--accent-primary)" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={800} />
               <Area type="monotone" dataKey="actual" stroke="var(--accent-secondary)" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={800} />
@@ -1220,26 +1394,7 @@ function CaseStudyCard({ cs, index }) {
       );
     }
     if (cs.chartType === 'bar') {
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ margin: '-50px' }}
-          transition={{ duration: 0.3 }}
-          className="w-full"
-        >
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={cs.data}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="source" stroke="#64748b" fontSize={11} />
-              <YAxis stroke="#64748b" fontSize={12} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
-              <Tooltip contentStyle={{ background: 'rgba(26, 26, 46, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,240,255,0.5)', borderRadius: '12px', color: '#e2e8f0', boxShadow: '0 0 20px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1)' }} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
-              <Bar dataKey="before" fill="#475569" radius={[4, 4, 0, 0]} name="Before" isAnimationActive={true} animationDuration={800} />
-              <Bar dataKey="after" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} name="After" isAnimationActive={true} animationDuration={800} animationDelay={150} />
-            </BarChart>
-          </ResponsiveContainer>
-        </motion.div>
-      );
+      return <AnimatedEfficiencyChart cs={cs} />;
     }
     if (cs.chartType === 'radar') {
       return (
@@ -1423,11 +1578,11 @@ function FounderSection() {
           </h2>
         </AnimatedSection>
         <motion.div
-          initial={{ opacity: 0, rotateX: 90, y: 50, z: -100 }} 
+          initial={{ opacity: 0, rotateX: 15, y: 40, z: -50 }} 
           whileInView={{ opacity: 1, rotateX: 0, y: 0, z: 0 }} 
-          exit={{ opacity: 0, rotateX: -90, y: -50, z: -100 }} 
-          viewport={{ once: false, amount: 0.1 }}
-          transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
+          exit={{ opacity: 0, rotateX: -15, y: -40, z: -50 }} 
+          viewport={{ once: false, amount: 0.2 }}
+          transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
           className="w-full relative z-10"
         >
           <div className="glass rounded-2xl border border-white/5 overflow-hidden">
@@ -1858,7 +2013,10 @@ function ChatWidget() {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sessionId] = useState(() => typeof window !== 'undefined' ? `chat_${Date.now()}_${Math.random().toString(36).slice(2)}` : 'default');
+  const [sessionId, setSessionId] = useState('default');
+  useEffect(() => {
+    setSessionId(`chat_${Date.now()}_${Math.random().toString(36).slice(2)}`);
+  }, []);
   const scrollRef = useRef(null);
 
   useEffect(() => {
