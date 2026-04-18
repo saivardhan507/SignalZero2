@@ -793,23 +793,31 @@ function Navigation() {
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
-            animate={{ opacity: 1, height: 'auto' }}
+            animate={{ opacity: 1, height: '100vh' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden absolute top-full left-0 w-full bg-[var(--bg-base)]/90 backdrop-blur-[16px] border-b border-[var(--accent-primary)]/12 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden"
+            className="md:hidden absolute top-full left-0 w-full bg-[#050810] shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-y-auto z-[9999] pointer-events-auto"
           >
-            <div className="px-6 py-6 flex flex-col gap-6">
+            <div className="px-6 py-8 flex flex-col gap-2">
               {links.map((link) => (
                 <a 
                   key={link.href} 
                   href={link.href} 
                   onClick={() => setMenuOpen(false)}
-                  className="text-gray-300 hover:text-[var(--accent-primary)] text-base font-semibold tracking-widest uppercase transition-colors"
+                  onTouchEnd={() => setMenuOpen(false)}
+                  className="block w-full py-4 text-gray-300 hover:text-[var(--accent-primary)] text-lg font-bold tracking-widest uppercase transition-colors cursor-pointer"
+                  style={{ minHeight: '48px', WebkitTapHighlightColor: 'rgba(0,229,255,0.2)' }}
                 >
                   {link.label}
                 </a>
               ))}
-              <a href="#discovery" onClick={() => setMenuOpen(false)} className="mt-4">
-                <Button className="w-full bg-[var(--accent-primary)] text-[var(--bg-base)] hover:bg-[var(--accent-primary)] font-bold py-6 rounded-full text-base transition-all duration-300 hover:shadow-[0_0_18px_rgba(0,245,255,0.5)]">
+              <a 
+                href="#discovery" 
+                onClick={() => setMenuOpen(false)} 
+                onTouchEnd={() => setMenuOpen(false)}
+                className="mt-6 block w-full cursor-pointer"
+                style={{ WebkitTapHighlightColor: 'rgba(0,229,255,0.2)' }}
+              >
+                <Button className="w-full bg-[var(--accent-primary)] text-[var(--bg-base)] hover:bg-[var(--accent-primary)] font-bold py-6 rounded-full text-lg transition-all duration-300 hover:shadow-[0_0_18px_rgba(0,245,255,0.5)] pointer-events-none">
                   Start a Project <ArrowRight className="w-5 h-5 ml-2" />
                 </Button>
               </a>
