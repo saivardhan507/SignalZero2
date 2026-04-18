@@ -1135,7 +1135,7 @@ function OurProcessSection() {
       style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }}
       className="py-10 sm:py-20 px-[20px] md:px-[60px]"
     >
-      <div className="glass rounded-[40px] px-5 py-10 md:p-[60px] border border-white/5 overflow-visible mx-auto max-w-[1200px] w-full flex flex-col relative">
+      <div className="glass rounded-[40px] px-5 py-10 md:p-[60px] border border-white/5 overflow-hidden mx-auto max-w-[1200px] w-full flex flex-col relative">
         
         {/* Header */}
         <div className="text-center mb-16 relative z-10 mx-auto max-w-2xl">
@@ -1192,7 +1192,7 @@ function OurProcessSection() {
                                initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.4, delay: 2 * 0.15 }} />
                 </mask>
                 <mask id="mask3">
-                  <motion.path d="M 1080 140 C 1120 140, 1120 468, 1080 468" stroke="white" strokeWidth="8" fill="none"
+                  <motion.path d="M 1026 140 C 1076 140, 1076 468, 1026 468" stroke="white" strokeWidth="8" fill="none"
                                initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.6, delay: 3 * 0.15 }} />
                 </mask>
                 <mask id="mask4">
@@ -1208,7 +1208,7 @@ function OurProcessSection() {
               {/* Infinitely Scrolling Dashed Paths tied to the expanding Masks */}
               <path d="M 328 140 C 344 160, 360 120, 376 140" stroke="url(#g1-2)" className="process-connector" mask="url(#mask1)" />
               <path d="M 704 140 C 720 160, 736 120, 752 140" stroke="url(#g2-3)" className="process-connector" mask="url(#mask2)" />
-              <path d="M 1080 140 C 1120 140, 1120 468, 1080 468" stroke="url(#g3-4)" className="process-connector" mask="url(#mask3)" />
+              <path d="M 1026 140 C 1076 140, 1076 468, 1026 468" stroke="url(#g3-4)" className="process-connector" mask="url(#mask3)" />
               <path d="M 752 468 C 736 488, 720 448, 704 468" stroke="url(#g4-5)" className="process-connector" mask="url(#mask4)" />
               <path d="M 376 468 C 360 488, 344 448, 328 468" stroke="url(#g5-6)" className="process-connector" mask="url(#mask5)" />
             </svg>
@@ -1267,8 +1267,8 @@ function OurProcessSection() {
 
                     {/* Mobile Only Dashboard Dashed line */}
                     {step.id !== 6 && (
-                      <div className="md:hidden absolute w-[2px] h-[50px] left-1/2 -bottom-[50px] -translate-x-1/2 border-l-2 border-dashed z-[20]"
-                           style={{ borderColor: step.color, opacity: 0.8 }} />
+                      <div className="md:hidden absolute w-[2px] h-[50px] left-1/2 -bottom-[50px] -translate-x-1/2 border-l-2 border-dashed z-0"
+                           style={{ borderColor: step.color, opacity: 0.5 }} />
                     )}
                   </div>
                 </motion.div>
