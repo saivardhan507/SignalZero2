@@ -1135,7 +1135,7 @@ function OurProcessSection() {
       style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }}
       className="py-10 sm:py-20 px-[20px] md:px-[60px]"
     >
-      <div className="glass rounded-[40px] px-5 py-10 md:p-[60px] border border-white/5 overflow-hidden mx-auto max-w-[1200px] w-full flex flex-col relative">
+      <div className="glass rounded-[40px] px-5 py-10 md:p-[60px] border border-white/5 overflow-visible mx-auto max-w-[1200px] w-full flex flex-col relative">
         
         {/* Header */}
         <div className="text-center mb-16 relative z-10 mx-auto max-w-2xl">
@@ -1267,8 +1267,8 @@ function OurProcessSection() {
 
                     {/* Mobile Only Dashboard Dashed line */}
                     {step.id !== 6 && (
-                      <div className="md:hidden absolute w-[2px] h-[50px] left-1/2 -bottom-[50px] -translate-x-1/2 border-l-2 border-dashed z-0"
-                           style={{ borderColor: step.color, opacity: 0.5 }} />
+                      <div className="md:hidden absolute w-[2px] h-[50px] left-1/2 -bottom-[50px] -translate-x-1/2 border-l-2 border-dashed z-[20]"
+                           style={{ borderColor: step.color, opacity: 0.8 }} />
                     )}
                   </div>
                 </motion.div>
