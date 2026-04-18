@@ -13,7 +13,7 @@ import {
   ExternalLink, Linkedin, Mail, Phone, MapPin,
   Shield, Check, Menu, Sparkles, Zap, Globe,
   Target, TrendingUp, Users, Award, BookOpen, Layers,
-  MousePointer, ArrowDown, Star, Box, Search
+  MousePointer, ArrowDown, Star, Box, Search, Rocket, CheckCircle
 } from 'lucide-react';
 import ModelViewer from '@/components/ModelViewer';
 import {
@@ -34,13 +34,13 @@ const SERVICES = [
   {
     id: 'fullstack', title: 'Full-Stack Web Platform',
     description: 'Custom-built web applications with modern architectures, real-time features, and seamless user experiences.',
-    icon: Code, color: '#00f0ff',
+    icon: Code, color: 'var(--accent-primary)',
     tech: ['Next.js', 'React', 'Node.js', 'PostgreSQL', 'MongoDB'],
   },
   {
     id: 'ai', title: 'Custom AI Agent / RAG Pipeline',
     description: 'Intelligent AI agents trained on your data, enabling conversational AI, document Q&A, and automated decision-making.',
-    icon: Brain, color: '#8b5cf6',
+    icon: Brain, color: 'var(--accent-secondary)',
     tech: ['LangChain', 'GPT-4', 'Gemini', 'Vector DB', 'Python'],
   },
   {
@@ -194,10 +194,10 @@ function AnimatedSection({ children, className = '', delay = 0 }) {
 function SignalZeroLogo({ className = 'w-10 h-10' }) {
   return (
     <svg viewBox="0 0 48 48" className={className} fill="none">
-      <circle cx="24" cy="24" r="22" stroke="#00f0ff" strokeWidth="1" opacity="0.3" />
-      <circle cx="24" cy="24" r="16" stroke="#00f0ff" strokeWidth="1.5" opacity="0.6" />
-      <path d="M 8 24 Q 13 14, 18 24 Q 23 34, 28 24 Q 33 14, 38 24" stroke="#00f0ff" strokeWidth="2" strokeLinecap="round" />
-      <circle cx="24" cy="24" r="2.5" fill="#00f0ff" />
+      <circle cx="24" cy="24" r="22" stroke="var(--accent-primary)" strokeWidth="1" opacity="0.3" />
+      <circle cx="24" cy="24" r="16" stroke="var(--accent-primary)" strokeWidth="1.5" opacity="0.6" />
+      <path d="M 8 24 Q 13 14, 18 24 Q 23 34, 28 24 Q 33 14, 38 24" stroke="var(--accent-primary)" strokeWidth="2" strokeLinecap="round" />
+      <circle cx="24" cy="24" r="2.5" fill="var(--accent-primary)" />
     </svg>
   );
 }
@@ -267,12 +267,32 @@ function SignalWaveCanvas() {
       };
     }
 
-    function animate() {
-      time += 0.014;
-      ctx.clearRect(0, 0, canvas.width, canvas.height);
+    let lastMouseX = -9999;
+    let lastMouseY = -9999;
+    let targetSpeed = 0.014;
+    let currentSpeed = 0.014;
 
+    function animate() {
+      // Calculate mouse velocity for wave speed
       const mx = mouseRef.current.x;
       const my = mouseRef.current.y;
+      
+      let targetSpeed = 0.014;
+      if (mx !== -9999 && lastMouseX !== -9999) {
+        const dxMouse = mx - lastMouseX;
+        const dyMouse = my - lastMouseY;
+        const dist = Math.sqrt(dxMouse * dxMouse + dyMouse * dyMouse);
+        targetSpeed = Math.min(0.05, 0.014 + dist * 0.001);
+      }
+      lastMouseX = mx;
+      lastMouseY = my;
+      
+      // Smoothly interpolate to target speed
+      currentSpeed += (targetSpeed - currentSpeed) * 0.05;
+      time += currentSpeed;
+
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+
       const W = canvas.width;
       const H = canvas.height;
 
@@ -356,7 +376,7 @@ function SignalWaveCanvas() {
           if (c === 0) ctx.moveTo(p.bx, p.by);
           else ctx.lineTo(p.bx, p.by);
         }
-        ctx.strokeStyle = '#00f0ff';
+        ctx.strokeStyle = 'var(--accent-primary)';
         ctx.lineWidth = 0.5;
         ctx.stroke();
       }
@@ -385,7 +405,7 @@ function SignalWaveCanvas() {
             ctx.beginPath();
             ctx.moveTo(p.bx, p.by);
             ctx.lineTo(p.sx, p.sy);
-            ctx.strokeStyle = `rgba(0, 240, 255, ${stemOp})`;
+            ctx.strokeStyle = `rgba(0, 229, 255, ${stemOp})`;
             ctx.lineWidth = Math.max(0.3, 0.8 * p.scale);
             ctx.stroke();
           }
@@ -425,7 +445,7 @@ function SignalWaveCanvas() {
         }
         ctx.lineTo(lastP.sx, lastP.sy);
         // Color shifts: more white when signal is strong, more dim when near zero
-        ctx.strokeStyle = `rgba(0, 240, 255, ${rowOp * 0.45})`;
+        ctx.strokeStyle = `rgba(0, 229, 255, ${rowOp * 0.45})`;
         ctx.lineWidth = Math.max(0.5, 1.8 * rowData[0].scale);
         ctx.stroke();
 
@@ -436,7 +456,7 @@ function SignalWaveCanvas() {
       if (mx > 0 && mx < W && my > 0 && my < H) {
         // Subtle radial indicator
         const zg = ctx.createRadialGradient(mx, my, 0, mx, my, FLATTEN_RADIUS);
-        zg.addColorStop(0, 'rgba(0, 240, 255, 0.025)');
+        zg.addColorStop(0, 'rgba(0, 229, 255, 0.025)');
         zg.addColorStop(0.5, 'rgba(0, 200, 255, 0.01)');
         zg.addColorStop(0.85, 'rgba(0, 180, 255, 0.005)');
         zg.addColorStop(1, 'rgba(0, 150, 255, 0)');
@@ -448,7 +468,7 @@ function SignalWaveCanvas() {
         // Edge ring (like a force field)
         ctx.beginPath();
         ctx.arc(mx, my, FLATTEN_RADIUS, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.06)';
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.06)';
         ctx.lineWidth = 1;
         ctx.setLineDash([4, 8]);
         ctx.stroke();
@@ -457,13 +477,13 @@ function SignalWaveCanvas() {
         // Inner ring
         ctx.beginPath();
         ctx.arc(mx, my, FLATTEN_RADIUS * 0.35, 0, Math.PI * 2);
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.04)';
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.04)';
         ctx.lineWidth = 0.5;
         ctx.stroke();
 
         // Crosshair at cursor
         const ch = 8;
-        ctx.strokeStyle = 'rgba(0, 240, 255, 0.15)';
+        ctx.strokeStyle = 'rgba(0, 229, 255, 0.15)';
         ctx.lineWidth = 1;
         ctx.beginPath();
         ctx.moveTo(mx - ch, my); ctx.lineTo(mx + ch, my);
@@ -531,92 +551,110 @@ function Navigation() {
     const onScroll = () => {
       setScrolled(window.scrollY > 50);
       // Calculate scroll progress percentage
-      const docHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+      const docHeight = document.documentElement.scrollHeight - window.innerHeight;
       if (docHeight > 0) {
         setScrollProgress(Math.min((window.scrollY / docHeight) * 100, 100));
       }
     };
     window.addEventListener('scroll', onScroll, { passive: true });
+    onScroll(); // initial state
     return () => window.removeEventListener('scroll', onScroll);
   }, []);
 
   const links = [
-    { label: 'About', href: '#about' },
-    { label: 'Services', href: '#services' },
-    { label: 'Case Studies', href: '#case-studies' },
-    { label: 'Founder', href: '#founder' },
-    { label: 'Contact', href: '#discovery' },
+    { label: 'ABOUT', href: '#about' },
+    { label: 'SERVICES', href: '#services' },
+    { label: 'CASE STUDIES', href: '#case-studies' },
+    { label: 'FOUNDER', href: '#founder' },
+    { label: 'CONTACT', href: '#discovery' },
   ];
 
   return (
-    <>
-      {/* Scroll Progress Bar */}
-      <div
-        className="fixed top-0 left-0 h-[3px] z-[9999]"
-        style={{
-          width: `${scrollProgress}%`,
-          background: 'linear-gradient(90deg, #00f0ff, #00d4e0)',
-          boxShadow: '0 0 8px rgba(0, 240, 255, 0.5), 0 0 2px rgba(0, 240, 255, 0.3)',
-          transition: 'width 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
-          willChange: 'width',
-        }}
-      />
-      <nav className={`sticky top-0 z-[100] w-full transition-all duration-500 ${scrolled ? 'glass-strong py-3' : 'py-5'} pt-safe`}>
-      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between">
+    <nav 
+      className={`fixed top-0 left-0 w-full z-[1000] transition-all duration-400 ease-in-out ${
+        scrolled 
+          ? 'bg-[var(--bg-base)]/65 backdrop-blur-[16px] border-b border-[var(--accent-primary)]/12 shadow-[0_4px_30px_rgba(0,0,0,0.1)] py-3' 
+          : 'bg-transparent border-b border-transparent py-5'
+      }`}
+    >
+      <div className="max-w-7xl mx-auto px-6 flex items-center justify-between relative">
+        {/* Logo */}
         <a href="#" className="flex items-center gap-3 group">
-          <SignalZeroLogo className="w-9 h-9 transition-transform group-hover:scale-110" />
+          <SignalZeroLogo className="w-9 h-9 transition-transform group-hover:scale-110 text-[var(--accent-primary)]" />
           <div>
-            <span className="text-white font-bold text-lg tracking-widest">SIGNAL</span>
-            <span className="text-[#00f0ff] font-bold text-lg tracking-widest ml-1">ZERO</span>
+            <span className="text-[var(--text-primary)] font-bold text-lg tracking-widest">SIGNAL</span>
+            <span className="text-[var(--accent-primary)] font-bold text-lg tracking-widest ml-1">ZERO</span>
           </div>
         </a>
+
+        {/* Desktop Links */}
         <div className="hidden md:flex items-center gap-8">
-          {links.map(link => (
-            <a key={link.href} href={link.href} className="text-[13px] text-[#9CA3AF] hover:text-[#00f0ff] transition-colors duration-300 tracking-[0.05em] font-medium uppercase">
+          {links.map((link) => (
+            <a 
+              key={link.href} 
+              href={link.href} 
+              className="group relative text-[13px] text-gray-300 hover:text-[var(--accent-primary)] transition-colors duration-300 tracking-[0.05em] font-medium uppercase hover:[text-shadow:0_0_8px_rgba(0,245,255,0.4)]"
+            >
               {link.label}
+              {/* Subtle underline scale-in animation */}
+              <span className="absolute -bottom-1 left-0 w-full h-[2px] bg-[var(--accent-primary)] scale-x-0 group-hover:scale-x-100 transition-transform duration-300 origin-left rounded-full shadow-[0_0_8px_rgba(0,245,255,0.6)]" />
             </a>
           ))}
           <a href="#discovery">
-            <Button className="bg-[#00f0ff] text-black hover:bg-[#00d4e0] font-semibold px-6 rounded-full text-sm">
+            <Button className="bg-[var(--accent-primary)] text-[var(--bg-base)] hover:bg-[var(--accent-primary)] font-bold px-6 py-5 rounded-full text-sm transition-all duration-300 hover:shadow-[0_0_18px_rgba(0,245,255,0.5)]">
               Start a Project <ArrowRight className="w-4 h-4 ml-2" />
             </Button>
           </a>
         </div>
-        <button className="md:hidden text-white" onClick={() => setMenuOpen(!menuOpen)}>
-          {menuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+
+        {/* Mobile Toggle */}
+        <button className="md:hidden text-white hover:text-[var(--accent-primary)] transition-colors" onClick={() => setMenuOpen(!menuOpen)}>
+          {menuOpen ? <X className="w-7 h-7" /> : <Menu className="w-7 h-7" />}
         </button>
       </div>
+
+      {/* Scroll Progress Bar at the very bottom edge of the header */}
+      <div
+        className="absolute bottom-0 left-0 h-[3px]"
+        style={{
+          width: `${scrollProgress}%`,
+          background: 'linear-gradient(90deg, var(--accent-primary), #0080ff)',
+          boxShadow: '0 0 8px rgba(0, 229, 255, 0.5), 0 0 2px rgba(0, 229, 255, 0.3)',
+          transition: 'width 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+          willChange: 'width',
+        }}
+      />
+
+      {/* Mobile Menu */}
       <AnimatePresence>
         {menuOpen && (
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
-            className="md:hidden glass-strong border-t border-white/5"
+            className="md:hidden absolute top-full left-0 w-full bg-[var(--bg-base)]/90 backdrop-blur-[16px] border-b border-[var(--accent-primary)]/12 shadow-[0_10px_30px_rgba(0,0,0,0.5)] overflow-hidden"
           >
-            <div className="px-6 py-4 flex flex-col gap-4">
-              {links.map(link => (
-                <a key={link.href} href={link.href} onPointerDown={(e) => {
-                  e.preventDefault();
-                  setMenuOpen(false);
-                  setTimeout(() => { window.location.hash = link.href; }, 50);
-                }} className="text-gray-300 transition-colors py-3 block w-full cursor-pointer touch-manipulation">
+            <div className="px-6 py-6 flex flex-col gap-6">
+              {links.map((link) => (
+                <a 
+                  key={link.href} 
+                  href={link.href} 
+                  onClick={() => setMenuOpen(false)}
+                  className="text-gray-300 hover:text-[var(--accent-primary)] text-base font-semibold tracking-widest uppercase transition-colors"
+                >
                   {link.label}
                 </a>
               ))}
-              <a href="#discovery" onPointerDown={(e) => {
-                e.preventDefault();
-                setMenuOpen(false);
-                setTimeout(() => { window.location.hash = '#discovery'; }, 50);
-              }} className="block w-full mt-2 touch-manipulation">
-                <Button className="bg-[#00f0ff] text-black w-full rounded-full cursor-pointer pointer-events-none">Start a Project</Button>
+              <a href="#discovery" onClick={() => setMenuOpen(false)} className="mt-4">
+                <Button className="w-full bg-[var(--accent-primary)] text-[var(--bg-base)] hover:bg-[var(--accent-primary)] font-bold py-6 rounded-full text-base transition-all duration-300 hover:shadow-[0_0_18px_rgba(0,245,255,0.5)]">
+                  Start a Project <ArrowRight className="w-5 h-5 ml-2" />
+                </Button>
               </a>
             </div>
           </motion.div>
         )}
       </AnimatePresence>
     </nav>
-    </>
   );
 }
 
@@ -626,98 +664,114 @@ function HeroSection() {
   const splitX = useTransform(scrollY, [0, 500], [0, 200]);
   const opacityFade = useTransform(scrollY, [0, 400], [1, 0]);
 
+  const statsData = [
+    { value: '10+', label: 'CLIENTS SCALED', icon: Users, delay: 1.0 },
+    { value: '50+', label: 'PROJECTS DELIVERED', icon: CheckCircle, delay: 1.1 },
+    { value: '6+', label: 'PRODUCTS BUILDING', icon: Rocket, delay: 1.2 },
+    { value: '100%', label: 'DELIVERY RATE', icon: Target, delay: 1.3 },
+  ];
+
   return (
     <section className="relative flex-1 flex flex-col items-center justify-center w-full z-10 py-12 lg:py-20 flex-shrink-0">
       {/* Content */}
-      <div className="relative z-10 text-center px-6 w-full max-w-5xl mx-auto pointer-events-none flex flex-col items-center justify-center">
-        <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.8, delay: 0.2 }}>
-          <Badge variant="outline" className="mb-6 lg:mb-8 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-4 sm:px-5 py-1.5 text-[clamp(0.6rem,1.2vw,0.7rem)] tracking-[0.2em] uppercase rounded-full pointer-events-auto font-medium">
-            <Sparkles className="w-3.5 h-3.5 mr-2" /> Integrated AI & Systems Engineering Agency
-          </Badge>
+      <div className="relative z-10 text-center px-6 w-full max-w-6xl mx-auto pointer-events-none flex flex-col items-center justify-center font-sans mt-8">
+        
+        {/* Top Hover Badge */}
+        <motion.div 
+          initial={{ opacity: 0, y: -20 }} 
+          animate={{ opacity: 1, y: 0 }} 
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
+          <div className="mb-6 lg:mb-8 border border-white/10 bg-white/5 backdrop-blur-md px-5 py-2 text-[clamp(0.65rem,1.2vw,0.75rem)] tracking-[0.2em] uppercase rounded-full pointer-events-auto font-medium inline-flex items-center text-zinc-300 hover:text-white hover:border-[var(--accent-glow)]/50 hover:shadow-[0_0_15px_rgba(0,255,127,0.2)] transition-all duration-300 group cursor-default">
+            <Sparkles className="w-3.5 h-3.5 mr-2 text-[var(--accent-glow)] group-hover:animate-pulse" /> Integrated AI & Systems Engineering Agency
+          </div>
         </motion.div>
+
+        {/* Main Title */}
         <motion.h1
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.4 }}
+          initial={{ scale: 0.95, opacity: 0, filter: "blur(10px)" }}
+          animate={{ scale: 1, opacity: 1, filter: "blur(0px)" }}
+          transition={{ duration: 0.8, delay: 0.1, ease: "easeOut" }}
           className="text-[clamp(3.5rem,10vw,8rem)] font-black uppercase mb-6 sm:mb-8 flex justify-center items-center gap-3 sm:gap-4 flex-wrap"
           style={{ letterSpacing: '-0.03em', lineHeight: '1.05', opacity: opacityFade }}
         >
           <motion.span
             style={{ x: useTransform(splitX, v => -v) }}
-            className="neon-text-white text-white"
+            className="text-[var(--text-primary)]"
           >
             SIGNAL
           </motion.span>
           <motion.span
             style={{ x: splitX }}
-            className="neon-text text-[#00f0ff]"
+            className="neon-text text-[var(--accent-primary)] drop-shadow-[0_0_40px_rgba(0,204,255,0.4)]"
           >
             ZERO
           </motion.span>
         </motion.h1>
+
+        {/* Subtitle */}
         <motion.p
-          initial={{ opacity: 0, y: 30 }}
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.8, delay: 0.4 }}
+          className="text-[clamp(1rem,2vw,1.15rem)] font-medium text-zinc-400 max-w-[65ch] mx-auto mb-10 lg:mb-12 leading-[1.7] pointer-events-auto cursor-default"
+        >
+          We engineer intelligent systems that transform raw data into competitive advantage. From custom AI agents to real-time analytics — we build what others can&apos;t.
+        </motion.p>
+        
+        {/* Buttons */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.8, delay: 0.6 }}
-          className="text-[clamp(1rem,3vw,1.25rem)] font-medium text-gray-400 max-w-[55ch] mx-auto mb-10 lg:mb-12 leading-[1.6] pointer-events-auto cursor-default"
+          className="flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto w-full max-w-lg mx-auto"
         >
-          {"We engineer intelligent systems that transform raw data into competitive advantage. From custom AI agents to real-time analytics — we build what others can't.".split(" ").map((word, i) => (
-            <motion.span
-              key={i}
-              whileHover={{ color: '#ffffff', scale: 1.2, textShadow: "0 0 15px rgba(0,240,255,0.6)", zIndex: 50 }}
-              className="inline-block transition-all duration-200 hover:text-white"
-              style={{ position: 'relative' }}
-            >
-              {word}&nbsp;
-            </motion.span>
-          ))}
-        </motion.p>
-        <motion.div
-          initial={{ opacity: 0, y: 30 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.8, delay: 0.8 }}
-          className="flex flex-col sm:flex-row items-center justify-center gap-4 pointer-events-auto"
-        >
-          <a href="#discovery">
-            <Button className="bg-[#00f0ff] text-[#0a0a0f] hover:bg-[#00d4e0] font-bold px-10 py-6 rounded-full text-[15px] shadow-lg shadow-[#00f0ff]/20 tracking-wide">
+          <a href="#discovery" className="w-full sm:w-auto">
+            <Button className="w-full bg-gradient-to-r from-[var(--accent-primary)] to-[var(--accent-primary)] text-[#030303] hover:scale-[1.02] hover:brightness-110 font-bold px-10 py-6 rounded-full text-[15px] tracking-wide border-0 transition-all duration-300"
+                    style={{ boxShadow: "0 0 20px rgba(0, 204, 255, 0.3)" }}>
               Start Your Project <ArrowRight className="w-5 h-5 ml-2" />
             </Button>
           </a>
-          <a href="#case-studies">
-            <Button variant="outline" className="border-white/20 text-white hover:border-[#00f0ff]/40 hover:text-[#00f0ff] px-10 py-6 rounded-full text-[15px] bg-transparent tracking-wide">
-              View Our Work <ExternalLink className="w-4 h-4 ml-2" />
+          <a href="#case-studies" className="w-full sm:w-auto">
+            <Button variant="outline" className="w-full glass border-white/10 bg-white/5 backdrop-blur-md text-white hover:bg-white/10 hover:text-white px-10 py-6 rounded-full text-[15px] tracking-wide transition-all duration-300">
+              View Our Work <ExternalLink className="w-4 h-4 ml-2 text-zinc-400" />
             </Button>
           </a>
         </motion.div>
-        {/* Stats */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ duration: 1, delay: 1.2 }}
-          className="mt-16 lg:mt-24 grid grid-cols-2 sm:grid-cols-4 gap-6 lg:gap-8 max-w-3xl w-full mx-auto pointer-events-auto"
-        >
-          {[
-            { value: '10+', label: 'CLIENTS' },
-            { value: '50+', label: 'PROJECTS DELIVERED' },
-            { value: '6+', label: 'PRODUCTS BUILDING' },
-            { value: '100%', label: 'DELIVERY RATE' },
-          ].map((stat, i) => (
-            <div key={i} className="text-center">
-              <div className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">{stat.value}</div>
-              <div className="text-[clamp(0.6rem,1.2vw,0.7rem)] text-[#64748b] mt-2 tracking-[0.15em] font-medium">{stat.label}</div>
-            </div>
+
+        {/* Bento Grid Stats */}
+        <div className="mt-16 lg:mt-24 grid grid-cols-2 lg:grid-cols-4 gap-4 max-w-5xl w-full mx-auto pointer-events-auto relative z-10 px-2 lg:px-0">
+          {statsData.map((stat, i) => (
+            <motion.div
+              key={i}
+              initial={{ opacity: 0, y: 40 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.6, delay: stat.delay, ease: [0.25, 0.46, 0.45, 0.94] }}
+              className="glass p-6 sm:p-7 transition-all duration-500 group relative overflow-hidden text-left"
+            >
+              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-b from-[var(--accent-glow)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+              <div className="flex items-center gap-3 mb-4">
+                <div className="p-2.5 rounded-xl bg-white/5 border border-white/10 group-hover:border-[var(--accent-glow)]/30 transition-colors duration-300">
+                  <stat.icon className="w-5 h-5 text-[var(--accent-glow)]" />
+                </div>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-white tracking-tight mb-1 tabular-nums">{stat.value}</div>
+              <div className="text-[10px] sm:text-[11px] text-zinc-400 tracking-[0.2em] font-medium uppercase">{stat.label}</div>
+            </motion.div>
           ))}
-        </motion.div>
+        </div>
       </div>
+      
       {/* Scroll indicator */}
       <motion.div
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
-        transition={{ delay: 2.5 }}
-        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2"
+        transition={{ delay: 2.0 }}
+        className="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 pointer-events-auto cursor-pointer"
+        onClick={() => window.scrollTo({ top: window.innerHeight, behavior: 'smooth' })}
       >
-        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 1.5, repeat: Infinity }}>
-          <ArrowDown className="w-4 h-4 text-[#00f0ff]/50" />
+        <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }}>
+          <ArrowDown className="w-5 h-5 text-zinc-500 hover:text-white transition-colors" />
         </motion.div>
       </motion.div>
     </section>
@@ -731,12 +785,12 @@ function AboutUsSection() {
       {/* High-tech wave pattern background */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,rgba(0,240,255,0.15)_0%,transparent_70%)]" />
-        <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, rgba(0, 240, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 240, 255, 0.05) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
+        <div className="absolute inset-0" style={{ backgroundImage: 'linear-gradient(to right, rgba(0, 229, 255, 0.05) 1px, transparent 1px), linear-gradient(to bottom, rgba(0, 229, 255, 0.05) 1px, transparent 1px)', backgroundSize: '40px 40px' }} />
       </div>
 
       {/* Radiant glow spots */}
-      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
-      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 left-1/4 -translate-y-1/2 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[var(--accent-primary)] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
+      <div className="absolute top-1/2 right-1/4 -translate-y-1/2 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[var(--accent-secondary)] rounded-full opacity-[0.02] blur-[150px] pointer-events-none" />
 
       <motion.div
         initial={{ opacity: 0, scale: 0.8 }}
@@ -749,8 +803,8 @@ function AboutUsSection() {
           <AnimatedSection>
             {/* Label */}
             <div className="flex items-center gap-4 mb-8">
-              <div className="w-1.5 h-8 bg-[#00f0ff] rounded-full shadow-[0_0_15px_rgba(0,240,255,0.6)]" />
-              <h2 className="text-[#00f0ff] text-xs font-black tracking-[0.2em] font-mono uppercase" style={{ textShadow: "0 0 20px rgba(0,240,255,0.4)" }}>
+              <div className="w-1.5 h-8 bg-[var(--accent-primary)] rounded-full shadow-[0_0_15px_rgba(0,240,255,0.6)]" />
+              <h2 className="text-[var(--accent-primary)] text-xs font-black tracking-[0.2em] font-mono uppercase" style={{ textShadow: "0 0 20px rgba(0,240,255,0.4)" }}>
                 ABOUT US
               </h2>
             </div>
@@ -778,10 +832,10 @@ function AboutUsSection() {
                 </p>
 
                 <div className="flex items-center gap-5 mt-4 pt-8 border-t border-white/5">
-                  <div className="w-14 h-14 rounded-2xl bg-[#00f0ff]/10 flex items-center justify-center border border-[#00f0ff]/30 shadow-[0_0_20px_rgba(0,240,255,0.2)]">
-                    <Code className="w-6 h-6 text-[#00f0ff]" />
+                  <div className="w-14 h-14 rounded-2xl bg-[var(--accent-primary)]/10 flex items-center justify-center border border-[var(--accent-primary)]/30 shadow-[0_0_20px_rgba(0,240,255,0.2)]">
+                    <Code className="w-6 h-6 text-[var(--accent-primary)]" />
                   </div>
-                  <p className="text-[#00f0ff] font-mono text-sm sm:text-base tracking-[0.05em] font-bold" style={{ textShadow: "0 0 20px rgba(0,240,255,0.4)" }}>
+                  <p className="text-[var(--accent-primary)] font-mono text-sm sm:text-base tracking-[0.05em] font-bold" style={{ textShadow: "0 0 20px rgba(0,240,255,0.4)" }}>
                     "Simplicity is the ultimate sophistication."
                   </p>
                 </div>
@@ -798,10 +852,10 @@ function AboutUsSection() {
 function ServicesSection() {
   return (
     <section id="services" className="py-32 sm:py-40 px-4 sm:px-6 relative">
-      <div className="absolute top-0 right-0 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.02] blur-[150px]" />
+      <div className="absolute top-0 right-0 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[var(--accent-secondary)] rounded-full opacity-[0.02] blur-[150px]" />
       <div className="max-w-7xl mx-auto">
         <AnimatedSection className="text-center mb-20">
-          <Badge variant="outline" className="mb-4 border-[#8b5cf6]/30 text-[#8b5cf6] bg-[#8b5cf6]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
+          <Badge variant="outline" className="mb-4 border-[var(--accent-secondary)]/30 text-[var(--accent-secondary)] bg-[var(--accent-secondary)]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
             <Layers className="w-3.5 h-3.5 mr-2" /> WHAT WE BUILD
           </Badge>
           <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-white mb-5 uppercase" style={{ letterSpacing: '-0.02em', lineHeight: '1.2' }}>
@@ -834,7 +888,7 @@ function ServicesSection() {
                     <div className="w-12 h-12 rounded-xl flex items-center justify-center mb-6" style={{ background: `${service.color}12` }}>
                       <service.icon className="w-6 h-6" style={{ color: service.color }} />
                     </div>
-                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[#00f0ff] transition-colors tracking-tight leading-tight">{service.title}</h3>
+                    <h3 className="text-xl font-bold text-white mb-3 group-hover:text-[var(--accent-primary)] transition-colors tracking-tight leading-tight">{service.title}</h3>
                     <p className="text-base text-gray-300 mb-6 leading-[1.6]">{service.description}</p>
                     <div className="flex flex-wrap gap-2">
                       {service.tech.map(t => (
@@ -868,81 +922,28 @@ function OurProcessSection() {
 
   const steps = [
     {
-      id: 1,
-      title: 'Ideation',
-      description: 'We brainstorm and refine your concept.',
-      color: '#00f0ff',
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          {/* Lightbulb icon */}
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8m0-13c-2.21 0-4 1.79-4 4h2c0-1.1.9-2 2-2s2 .9 2 2c0 2-3 2.5-3 5h2c0-2.5 3-3 3-5 0-2.21-1.79-4-4-4z" />
-          <rect x="10" y="19" width="4" height="2" />
-          <rect x="10" y="21" width="4" height="1" />
-        </svg>
-      )
+      id: 1, title: 'Ideation', description: 'We brainstorm and refine your concept.', color: '#00e5ff',
+      icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/><circle cx="12" cy="12" r="4"/></svg>
     },
     {
-      id: 2,
-      title: 'Scope',
-      description: 'Defining clear requirements and roadmap.',
-      color: '#8b5cf6',
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          {/* Target/Scope icon */}
-          <circle cx="12" cy="12" r="1" />
-          <circle cx="12" cy="12" r="5" fill="none" stroke="currentColor" strokeWidth="2" />
-          <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" strokeWidth="2" />
-        </svg>
-      )
+      id: 2, title: 'Scope', description: 'Defining clear requirements and roadmap.', color: '#a855f7',
+      icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
     },
     {
-      id: 3,
-      title: 'Design',
-      description: 'Creating intuitive and beautiful interfaces.',
-      color: '#ec4899',
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          {/* Palette icon */}
-          <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-5-9c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm0 4c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4-5c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm4 0c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2zm-4 8c1.1 0 2-.9 2-2s-.9-2-2-2-2 .9-2 2 .9 2 2 2z" />
-        </svg>
-      )
+      id: 3, title: 'Design', description: 'Creating intuitive and beautiful interfaces.', color: '#f43f8e',
+      icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M12 20.94c1.88 0 3.05-1.04 3.05-2.08 0-1.1-1.12-1.48-1.57-2.67a5 5 0 0 1-4.14-7.58c.24-.4.8-1.3 1.14-1.63a7.41 7.41 0 0 0-1.52-5 9.87 9.87 0 0 0-4.43 2.5 10.4 10.4 0 0 0-2.45 4.5 10.13 10.13 0 0 0 3.23 9.4 14.52 14.52 0 0 0 6.69 2.56z"/><circle cx="6.5" cy="5.5" r=".5"/><circle cx="10" cy="4" r=".5"/><circle cx="13.5" cy="6.5" r=".5"/><circle cx="15.5" cy="10" r=".5"/><circle cx="16" cy="14" r=".5"/></svg>
     },
     {
-      id: 4,
-      title: 'Development',
-      description: 'Clean coding with scalable architecture.',
-      color: '#10b981',
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          {/* Gears/Building icon */}
-          <path d="M12 15.5c-1.93 0-3.5-1.57-3.5-3.5s1.57-3.5 3.5-3.5 3.5 1.57 3.5 3.5-1.57 3.5-3.5 3.5zm0-5c-.82 0-1.5.68-1.5 1.5s.68 1.5 1.5 1.5 1.5-.68 1.5-1.5-.68-1.5-1.5-1.5z" />
-          <path d="M19.43 12.98c.04-.32.07-.64.07-.98s-.03-.66-.07-.98l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.59-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.32-.07.65-.07.98s.03.66.07.98l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.59 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z" />
-        </svg>
-      )
+      id: 4, title: 'Development', description: 'Clean coding with scalable architecture.', color: '#00d68f',
+      icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/><circle cx="12" cy="12" r="3"/></svg>
     },
     {
-      id: 5,
-      title: 'Delivery',
-      description: 'Rigorous testing and smooth launch.',
-      color: '#f59e0b',
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          {/* Rocket icon */}
-          <path d="M16.6915026,0.421627626 C16.4744481,0.584595767 16.1312458,0.841225559 15.4228455,1.56174899 C14.0139614,2.99788347 12.0109146,5.16798511 8.57219624,8.60670348 C6.5563168,10.6225828 4.70497565,12.6696079 3.27506535,14.5363908 C3.06056004,14.8297088 2.85343677,15.1155892 2.65384347,15.3934041 C1.24763012,17.3520231 0.17392,19.9919981 0.17392,22.8138554 C0.17392,23.4740061 0.753909049,24 1.43683272,24 C2.12036547,24 2.70034788,23.4740061 2.70034788,22.8138554 C2.70034788,20.5313496 3.54471308,18.4230759 4.98504686,16.8824752 C5.18603509,16.6298539 5.39214677,16.3836049 5.60350493,16.1329967 C7.08788331,14.4235184 9.01968152,12.2259256 11.0619303,10.1801513 C14.4450918,6.79717146 16.4206367,4.71509613 17.8047948,3.32926047 C18.4502106,2.68370366 18.8164277,2.31675762 19.0068499,2.12403159 L19.0068499,2.12403159 C19.3676812,1.78039983 19.8825862,1.78039983 20.2434174,2.12403159 C20.6052786,2.46910609 20.6052786,2.98353009 20.2434174,3.32860458 L14.8513219,8.7207002 L14.8513219,8.7207002 C14.8513219,8.7207002 14.6587467,8.91334688 14.4613297,9.11084486 C13.7207309,9.85159812 12.8297568,10.7434253 11.5230451,12.046637 C11.0600582,12.5090904 10.5686046,12.9996951 10.0589046,13.5085316 L10.0589046,13.5085316 C9.40922141,14.1524845 8.61236646,15.0283544 7.93552657,15.8695182 C7.62832829,16.2481231 7.33245093,16.6103196 7.04788334,16.9472944 L7.04788334,16.9472944 C5.99496213,18.3221122 5.17996761,19.3640266 4.58320906,20.2047453 L14.8513219,9.93653247 L14.8513219,9.93653247 C15.2131831,9.59289068 15.7280881,9.59289068 16.0899493,9.93653247 C16.4517106,10.2811966 16.4517106,10.7956206 16.0899493,11.140285 L5.82188129,21.4083475 C6.68338348,20.7184607 7.68961292,19.7627764 8.75254677,18.5900826 C9.14098014,18.1748935 9.5452656,17.738646 9.95761155,17.2733625 L9.95761155,17.2733625 C10.4752168,16.7154127 11.0053903,16.1354604 11.5318045,15.5987274 C12.8385163,14.2954157 13.7294904,13.4035885 14.4701881,12.6628948 C14.6675944,12.4651967 14.8600695,12.272491 15.0474139,12.0850466 L20.4395095,6.692951 C20.4395095,6.692951 20.8057266,6.32633132 21.4511424,5.68077451 C22.1595427,4.95931589 22.5027452,4.70267842 22.7197998,4.53970986 C23.0806311,4.19606809 23.5955361,4.19606809 23.9563673,4.53970986 C24.3182286,4.88435433 24.3182286,5.39877833 23.9563673,5.74341177 L19.6053495,10.0944296 C17.0151656,12.6845835 14.8513219,14.8491087 12.9788708,16.7209508 C12.1054743,17.5938226 11.3241618,18.3731925 10.6299646,19.0661247 C10.0589046,19.6370849 9.54140176,20.1536014 9.08813266,20.6068694 L9.08813266,20.6068694 C8.52551973,21.1703049 8.06919487,21.6273151 7.72001099,21.9758007 C7.25502949,22.4405689 7.25502949,23.1963471 7.72001099,23.6598817 C8.18484245,24.1251761 8.94105449,24.1251761 9.40603598,23.6598817 C9.96865891,23.0976563 10.629332,22.3441636 11.3828739,21.5201128 C12.0770711,20.8264876 12.8583835,20.0479205 13.7317801,19.1740088 C15.6042312,17.3014577 17.7680749,15.1368422 20.3582588,12.5466884 L24.7092766,8.19566654 C25.4176768,7.48713256 25.7848843,7.11846154 26.0019388,6.95549298 C26.362771,6.61185121 26.362771,6.09742721 26.0019388,5.75378544 L26.0019388,5.75378544 Z" />
-        </svg>
-      )
+      id: 5, title: 'Delivery', description: 'Rigorous testing and smooth launch.', color: '#f59e0b',
+      icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M13.5 10.5 21 3M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2c.71-.84.71-2.13.09-3.09a3 3 0 0 0-3.09.09zM12 15l9 3 3-3-3-9-15-3-3 3 3 9z"/></svg>
     },
     {
-      id: 6,
-      title: 'Support',
-      description: 'Ongoing maintenance and improvements.',
-      color: '#06b6d4',
-      icon: (
-        <svg className="w-6 h-6" viewBox="0 0 24 24" fill="currentColor">
-          {/* Headset icon */}
-          <path d="M12 1C6.48 1 2 5.48 2 11v6h4v4h4v-4h4v4h4v-4h4v-6c0-5.52-4.48-10-10-10zm0 2c4.41 0 8 3.59 8 8v4h-3v-3c0-.55-.45-1-1-1h-2v2h2v2h-4v-2h2v-2h-2c-.55 0-1 .45-1 1v3H4v-4c0-4.41 3.59-8 8-8z" />
-        </svg>
-      )
+      id: 6, title: 'Support', description: 'Ongoing maintenance and improvements.', color: '#3b82f6',
+      icon: <svg className="w-8 h-8" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path strokeLinecap="round" strokeLinejoin="round" d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8zM14 2v6h6M16 13H8M16 17H8M10 9H8"/></svg>
     }
   ];
 
@@ -950,249 +951,149 @@ function OurProcessSection() {
     <motion.section
       ref={containerRef}
       style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }}
-      className="py-20 sm:py-32 px-4"
+      className="py-10 sm:py-20 px-[20px] md:px-[60px]"
     >
-      <div className="glass rounded-3xl p-8 sm:p-20 border border-white/5 overflow-hidden min-h-screen flex flex-col">
+      <div className="glass rounded-[40px] px-5 py-10 md:p-[60px] border border-white/5 overflow-hidden mx-auto max-w-[1200px] w-full flex flex-col relative">
+        
         {/* Header */}
-        <div className="text-center mb-16">
-          <h3 className="text-xs font-mono font-bold text-[#00f0ff] mb-4 tracking-[0.2em] uppercase" style={{ textShadow: "0 0 20px rgba(0,240,255,0.4)" }}>
+        <div className="text-center mb-16 relative z-10 mx-auto max-w-2xl">
+          <h3 className="text-[11px] font-mono font-bold text-[var(--accent-primary)] mb-4" style={{ letterSpacing: '0.2em', textShadow: "0 0 20px rgba(0,240,255,0.4)" }}>
             HOW WE WORK
           </h3>
-          <h2 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-white mb-4 tracking-tight" style={{ textShadow: "0 0 40px rgba(0,240,255,0.2)" }}>
+          <h2 className="text-[28px] sm:text-[36px] md:text-[46px] font-extrabold text-[#f0f4ff] mb-6 tracking-tight">
             The Signal Zero Process
           </h2>
-          <p className="text-gray-400 max-w-2xl mx-auto text-base md:text-lg">Six orchestrated steps connecting your concept to a thriving product.</p>
+          <p className="text-[#8892a4] text-[16px] leading-[1.7]">Six orchestrated steps connecting your concept to a thriving product.</p>
         </div>
 
-        {/* Desktop Flowchart - Fluid Aspect Ratio Layout */}
-        <div className="hidden lg:flex w-full max-w-[1200px] mx-auto mt-8 flex-col items-center justify-center">
-          <div className="relative w-full aspect-[1200/700] max-h-[700px]">
+        <style dangerouslySetInnerHTML={{__html: `
+          @keyframes dashMove {
+            to { stroke-dashoffset: -100; }
+          }
+          .process-connector {
+            stroke-dasharray: 8 6;
+            animation: dashMove 2s linear infinite;
+            stroke-width: 2;
+            fill: none;
+            opacity: 0.8;
+          }
+          .card-hover-effect {
+            transition: transform 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease;
+          }
+          .card-hover-effect:hover {
+            transform: translateY(-4px);
+            border-color: var(--hover-border) !important;
+            box-shadow: var(--hover-shadow) !important;
+          }
+        `}} />
 
-            {/* Background Circuit Traces */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none" preserveAspectRatio="none" viewBox="0 0 1200 700">
-            <defs>
-              <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-                <path d="M 40 0 L 0 0 0 40" fill="none" stroke="rgba(255,255,255,0.03)" strokeWidth="1" />
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill="url(#grid)" />
-
-            {/* Intricate traces */}
-            <path d="M0 100 L 150 100 L 180 130 L 300 130" fill="none" stroke="#fff" opacity="0.05" strokeWidth="1" />
-            <path d="M1200 600 L 1050 600 L 1020 570 L 900 570" fill="none" stroke="#fff" opacity="0.05" strokeWidth="1" />
-            <path d="M400 0 L 400 80 L 430 110 L 500 110" fill="none" stroke="#fff" opacity="0.05" strokeWidth="1" />
-            <path d="M800 700 L 800 620 L 770 590 L 700 590" fill="none" stroke="#fff" opacity="0.05" strokeWidth="1" />
-          </svg>
-
-          {/* Core Signals SVG */}
-          <svg className="absolute inset-0 w-full h-full pointer-events-none z-0" preserveAspectRatio="none" viewBox="0 0 1200 700">
-            <defs>
-              <filter id="signalGlowObj">
-                <feGaussianBlur stdDeviation="4" result="glow" />
-                <feMerge>
-                  <feMergeNode in="glow" />
-                  <feMergeNode in="SourceGraphic" />
-                </feMerge>
-              </filter>
-              {/* Complex Network Trail Gradients with userSpaceOnUse to prevent Chrome zero-height bug */}
-              <linearGradient id="grad12" gradientUnits="userSpaceOnUse" x1="260" y1="200" x2="470" y2="200">
-                <stop offset="0%" stopColor="#00f0ff" />
-                <stop offset="100%" stopColor="#a855f7" />
-              </linearGradient>
-              <linearGradient id="grad23" gradientUnits="userSpaceOnUse" x1="730" y1="200" x2="940" y2="200">
-                <stop offset="0%" stopColor="#a855f7" />
-                <stop offset="100%" stopColor="#ec4899" />
-              </linearGradient>
-              <linearGradient id="grad34" gradientUnits="userSpaceOnUse" x1="940" y1="320" x2="260" y2="480">
-                <stop offset="0%" stopColor="#ec4899" />
-                <stop offset="100%" stopColor="#10b981" />
-              </linearGradient>
-              <linearGradient id="grad45" gradientUnits="userSpaceOnUse" x1="260" y1="600" x2="470" y2="600">
-                <stop offset="0%" stopColor="#10b981" />
-                <stop offset="100%" stopColor="#eab308" />
-              </linearGradient>
-              <linearGradient id="grad56" gradientUnits="userSpaceOnUse" x1="730" y1="600" x2="940" y2="600">
-                <stop offset="0%" stopColor="#eab308" />
-                <stop offset="100%" stopColor="#00f0ff" />
-              </linearGradient>
-            </defs>
-
-            {/* Path 1 -> 2 (Curved Stream) */}
-            <path d="M 260 180 C 330 230, 400 130, 470 180" stroke="url(#grad12)" strokeWidth="2" opacity="0.2" fill="none" />
-            <motion.path d="M 260 180 C 330 230, 400 130, 470 180" stroke="url(#grad12)" strokeWidth="3"
-              strokeDasharray="20 40" filter="url(#signalGlowObj)" fill="none"
-              animate={{ strokeDashoffset: [0, -60] }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
-
-            {/* Path 2 -> 3 (Curved Stream) */}
-            <path d="M 730 180 C 800 230, 870 130, 940 180" stroke="url(#grad23)" strokeWidth="2" opacity="0.2" fill="none" />
-            <motion.path d="M 730 180 C 800 230, 870 130, 940 180" stroke="url(#grad23)" strokeWidth="3"
-              strokeDasharray="20 40" filter="url(#signalGlowObj)" fill="none"
-              animate={{ strokeDashoffset: [0, -60] }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
-
-            {/* Path 3 -> 4 drops BEHIND row gap and emerges */}
-            <path d="M 1070 320 T 1070 340 C 1070 380, 850 380, 800 380 L 400 380 C 350 380, 130 380, 130 420 T 130 480"
-              fill="none" stroke="url(#grad34)" strokeWidth="2" opacity="0.2" />
-            <motion.path d="M 1070 320 T 1070 340 C 1070 380, 850 380, 800 380 L 400 380 C 350 380, 130 380, 130 420 T 130 480"
-              fill="none" stroke="url(#grad34)" strokeWidth="3"
-              strokeDasharray="20 40" filter="url(#signalGlowObj)"
-              animate={{ strokeDashoffset: [0, -60] }} transition={{ duration: 3, repeat: Infinity, ease: "linear" }} />
-
-            {/* Path 4 -> 5 (Curved Stream) */}
-            <path d="M 260 580 C 330 630, 400 530, 470 580" stroke="url(#grad45)" strokeWidth="2" opacity="0.2" fill="none" />
-            <motion.path d="M 260 580 C 330 630, 400 530, 470 580" stroke="url(#grad45)" strokeWidth="3"
-              strokeDasharray="20 40" filter="url(#signalGlowObj)" fill="none"
-              animate={{ strokeDashoffset: [0, -60] }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
-
-            {/* Path 5 -> 6 (Curved Stream) */}
-            <path d="M 730 580 C 800 630, 870 530, 940 580" stroke="url(#grad56)" strokeWidth="2" opacity="0.2" fill="none" />
-            <motion.path d="M 730 580 C 800 630, 870 530, 940 580" stroke="url(#grad56)" strokeWidth="3"
-              strokeDasharray="20 40" filter="url(#signalGlowObj)" fill="none"
-              animate={{ strokeDashoffset: [0, -60] }} transition={{ duration: 1.5, repeat: Infinity, ease: "linear" }} />
-
-            {/* Central Glowing Nexus Node (Gap between 2,3 & 5,6) - Moved down out of text way */}
-            <g transform="translate(600, 380)">
-              {/* Outer pulsing ring */}
-              <motion.circle r="30" fill="none" stroke="#00f0ff" strokeWidth="1" opacity="0.4"
-                animate={{ r: [15, 35, 15], opacity: [0.6, 0, 0.6] }}
-                transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }} />
-              <motion.circle r="20" fill="none" stroke="#00f0ff" strokeWidth="2" opacity="0.6" filter="url(#signalGlowObj)"
-                animate={{ r: [10, 25, 10] }}
-                transition={{ duration: 2, repeat: Infinity, ease: "easeInOut" }} />
-              {/* Core Hub */}
-              <circle r="8" fill="#00f0ff" filter="url(#signalGlowObj)" />
-              <circle r="3" fill="#ffffff" />
-            </g>
-          </svg>
-
-          {/* Cards Grid - Proportional Boundaries Mapping to SVG */}
-          <div className="absolute inset-0 w-full h-full flex flex-col justify-center px-[0%] pt-[6.5%]">
-            {/* Top Row: Cards 1, 2, 3 */}
-            <div className="flex justify-between w-full h-[34.2%]">
-              {steps.slice(0, 3).map((step, idx) => (
-                <motion.div key={step.id} className="relative w-[21.66%] h-full group"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ margin: '-40px' }}
-                  transition={{ duration: 0.5, delay: idx * 0.1 }}
-                >
-                  <div className="glass rounded-xl p-3 lg:p-4 xl:p-5 border-2 text-center h-full flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl hover:bg-black/40 transition-colors duration-300"
-                    style={{ borderColor: `${step.color}40`, boxShadow: `0 10px 30px -10px ${step.color}20` }}>
-                    <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-full mx-auto mb-2 lg:mb-3 flex items-center justify-center text-lg lg:text-2xl group-hover:scale-110 transition-transform duration-300 relative shrink-0"
-                      style={{ background: `${step.color}15`, border: `2px solid ${step.color}80`, color: step.color, boxShadow: `0 0 20px ${step.color}40` }}>
-                      {step.icon}
-                    </div>
-                    <div className="text-[9px] lg:text-[10px] font-mono font-bold text-gray-500 mb-1 tracking-widest uppercase">STEP {step.id}</div>
-                    <h4 className="text-sm lg:text-base font-bold text-white mb-1 lg:mb-2 leading-tight">{step.title}</h4>
-                    <p className="text-[9px] lg:text-[10px] xl:text-xs text-gray-400 leading-snug">{step.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-
-            {/* Proportional inter-row spacing for the trail */}
-            <div className="h-[17.1%] w-full" />
-
-            {/* Bottom Row: Cards 4, 5, 6 */}
-            <div className="flex justify-between w-full h-[34.2%]">
-              {steps.slice(3).map((step, idx) => (
-                <motion.div key={step.id} className="relative w-[21.66%] h-full group"
-                  initial={{ opacity: 0, y: 20 }}
-                  whileInView={{ opacity: 1, y: 0 }}
-                  viewport={{ margin: '-40px' }}
-                  transition={{ duration: 0.5, delay: (idx + 3) * 0.1 }}
-                >
-                  <div className="glass rounded-xl p-3 lg:p-4 xl:p-5 border-2 text-center h-full flex flex-col items-center justify-center bg-black/60 backdrop-blur-2xl hover:bg-black/40 transition-colors duration-300"
-                    style={{ borderColor: `${step.color}40`, boxShadow: `0 10px 30px -10px ${step.color}20` }}>
-                    <div className="w-10 h-10 lg:w-14 lg:h-14 rounded-full mx-auto mb-2 lg:mb-3 flex items-center justify-center text-lg lg:text-2xl group-hover:scale-110 transition-transform duration-300 relative shrink-0"
-                      style={{ background: `${step.color}15`, border: `2px solid ${step.color}80`, color: step.color, boxShadow: `0 0 20px ${step.color}40` }}>
-                      {step.icon}
-                    </div>
-                    <div className="text-[9px] lg:text-[10px] font-mono font-bold text-gray-500 mb-1 tracking-widest uppercase">STEP {step.id}</div>
-                    <h4 className="text-sm lg:text-base font-bold text-white mb-1 lg:mb-2 leading-tight">{step.title}</h4>
-                    <p className="text-[9px] lg:text-[10px] xl:text-xs text-gray-400 leading-snug">{step.description}</p>
-                  </div>
-                </motion.div>
-              ))}
-            </div>
-          </div>
-          </div>
-        </div>
-
-        {/* Mobile Flowchart - Full Screen Vertical */}
-        <div className="lg:hidden">
-          <div className="relative space-y-6">
-            {/* SVG curves for mobile */}
-            <svg className="absolute inset-0 w-full pointer-events-none" style={{ height: 'auto' }}>
+        {/* Global Wrapper for SVG and Grid */}
+        <div className="relative w-full z-10">
+          
+          {/* Desktop SVG Overlay */}
+          <div className="hidden md:block absolute inset-0 pointer-events-none overflow-visible" style={{ zIndex: 0 }}>
+            <svg className="w-full h-full pointer-events-none" viewBox="0 0 1080 600" preserveAspectRatio="none" overflow="visible">
               <defs>
-                <linearGradient id="mobileFlowGradient" x1="0%" y1="0%" x2="0%" y2="100%">
-                  <stop offset="0%" stopColor="#00f0ff" stopOpacity="0.5" />
-                  <stop offset="50%" stopColor="#8b5cf6" stopOpacity="0.5" />
-                  <stop offset="100%" stopColor="#00f0ff" stopOpacity="0.5" />
-                </linearGradient>
+                <linearGradient id="g1-2"><stop offset="0%" stopColor={steps[0].color}/><stop offset="100%" stopColor={steps[1].color}/></linearGradient>
+                <linearGradient id="g2-3"><stop offset="0%" stopColor={steps[1].color}/><stop offset="100%" stopColor={steps[2].color}/></linearGradient>
+                <linearGradient id="g3-4"><stop offset="0%" stopColor={steps[2].color}/><stop offset="100%" stopColor={steps[3].color}/></linearGradient>
+                <linearGradient id="g4-5"><stop offset="0%" stopColor={steps[3].color}/><stop offset="100%" stopColor={steps[4].color}/></linearGradient>
+                <linearGradient id="g5-6"><stop offset="0%" stopColor={steps[4].color}/><stop offset="100%" stopColor={steps[5].color}/></linearGradient>
+
+                {/* SVG Masks for "Drawing" the paths that contain natively scrolling CSS dashes */}
+                <mask id="mask1">
+                  <motion.path d="M 328 140 C 344 160, 360 120, 376 140" stroke="white" strokeWidth="8" fill="none"
+                               initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.4, delay: 1 * 0.15 }} />
+                </mask>
+                <mask id="mask2">
+                  <motion.path d="M 704 140 C 720 160, 736 120, 752 140" stroke="white" strokeWidth="8" fill="none"
+                               initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.4, delay: 2 * 0.15 }} />
+                </mask>
+                <mask id="mask3">
+                  <motion.path d="M 1080 140 C 1120 140, 1120 468, 1080 468" stroke="white" strokeWidth="8" fill="none"
+                               initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.6, delay: 3 * 0.15 }} />
+                </mask>
+                <mask id="mask4">
+                  <motion.path d="M 752 468 C 736 488, 720 448, 704 468" stroke="white" strokeWidth="8" fill="none"
+                               initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.4, delay: 4 * 0.15 }} />
+                </mask>
+                <mask id="mask5">
+                  <motion.path d="M 376 468 C 360 488, 344 448, 328 468" stroke="white" strokeWidth="8" fill="none"
+                               initial={{ pathLength: 0 }} whileInView={{ pathLength: 1 }} viewport={{ once: false, margin: '-20%' }} transition={{ duration: 0.4, delay: 5 * 0.15 }} />
+                </mask>
               </defs>
+
+              {/* Infinitely Scrolling Dashed Paths tied to the expanding Masks */}
+              <path d="M 328 140 C 344 160, 360 120, 376 140" stroke="url(#g1-2)" className="process-connector" mask="url(#mask1)" />
+              <path d="M 704 140 C 720 160, 736 120, 752 140" stroke="url(#g2-3)" className="process-connector" mask="url(#mask2)" />
+              <path d="M 1080 140 C 1120 140, 1120 468, 1080 468" stroke="url(#g3-4)" className="process-connector" mask="url(#mask3)" />
+              <path d="M 752 468 C 736 488, 720 448, 704 468" stroke="url(#g4-5)" className="process-connector" mask="url(#mask4)" />
+              <path d="M 376 468 C 360 488, 344 448, 328 468" stroke="url(#g5-6)" className="process-connector" mask="url(#mask5)" />
             </svg>
+          </div>
 
-            {/* Mobile Cards */}
-            <div className="relative z-10 space-y-6">
-              {steps.map((step, idx) => (
-                <motion.div
-                  key={step.id}
-                  initial={{ opacity: 0, x: -30 }}
-                  whileInView={{ opacity: 1, x: 0 }}
-                  viewport={{ margin: '-40px' }}
-                  transition={{ duration: 0.6, delay: idx * 0.12 }}
-                >
-                  <motion.div
-                    className="glass rounded-3xl p-6 border-2 hover:shadow-xl transition-all duration-300 cursor-pointer group"
-                    style={{ borderColor: `${step.color}33` }}
-                    whileHover={{ scale: 1.04, borderColor: step.color, boxShadow: `0 0 30px ${step.color}40` }}
+          {/* Core Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-y-[48px] md:gap-x-[48px] md:gap-y-[48px] w-full relative z-10">
+            {steps.map((step) => {
+              // Custom grid positions for snake flow
+              const isCol3Row2 = step.id === 4;
+              const isCol2Row2 = step.id === 5;
+              const isCol1Row2 = step.id === 6;
+              const gridPlaceClasses = isCol3Row2 ? "md:col-start-3 md:row-start-2" : 
+                                       isCol2Row2 ? "md:col-start-2 md:row-start-2" : 
+                                       isCol1Row2 ? "md:col-start-1 md:row-start-2" : "";
+              
+              const isActive = step.id === 1;
+
+              return (
+                <motion.div key={step.id} className={`w-full ${gridPlaceClasses}`}
+                     initial={{ opacity: 0, y: 40 }}
+                     whileInView={{ opacity: 1, y: 0 }}
+                     viewport={{ once: false, margin: '-20%' }}
+                     transition={{ duration: 0.4, delay: step.id * 0.15 }}
+                     style={{ 
+                       '--hover-border': `${step.color}66`,
+                       '--hover-shadow': `0 0 40px ${step.color}66`
+                     }}>
+                  {/* Card */}
+                  <div
+                    className={`card-hover-effect relative flex flex-col items-start p-8 rounded-[20px] ${isActive ? 'bg-[rgba(255,255,255,0.06)] border-[rgba(255,255,255,0.7)] shadow-[0_0_40px_rgba(255,255,255,0.08)]' : 'bg-[rgba(255,255,255,0.03)] border-[rgba(255,255,255,0.08)]'}`}
+                    style={{ minHeight: '280px', borderStyle: 'solid', borderWidth: '1px' }}
                   >
-                    <div className="flex items-center gap-6">
-                      {/* Icon */}
-                      <motion.div
-                        className="w-20 h-20 rounded-2xl flex items-center justify-center flex-shrink-0 text-2xl"
-                        style={{
-                          background: `${step.color}20`,
-                          border: `3px solid ${step.color}`,
-                          color: step.color,
-                          boxShadow: `0 0 25px ${step.color}50`
-                        }}
-                        whileHover={{ scale: 1.15 }}
-                      >
+                    <div className="w-[64px] h-[64px] rounded-full flex items-center justify-center self-center mb-6 relative z-10"
+                         style={{ 
+                           border: `2px solid ${step.color}`,
+                           background: `${step.color}1a`
+                         }}>
+                      <div style={{ color: step.color }}>
                         {step.icon}
-                      </motion.div>
-
-                      {/* Content */}
-                      <div className="flex-1">
-                        <div className="text-xs font-mono text-gray-500 mb-1 tracking-widest">STEP {step.id}</div>
-                        <h4 className="text-lg font-bold text-white mb-2 group-hover:text-transparent group-hover:bg-clip-text group-hover:bg-gradient-to-r group-hover:from-[#00f0ff] group-hover:to-[#8b5cf6] transition-all">
-                          {step.title}
-                        </h4>
-                        <p className="text-sm text-gray-400 leading-relaxed group-hover:text-gray-300 transition-colors">
-                          {step.description}
-                        </p>
                       </div>
                     </div>
-                  </motion.div>
+                    
+                    <div className="w-full relative z-10 text-center md:text-left">
+                      <div className="font-mono font-bold uppercase mb-2"
+                           style={{ letterSpacing: '0.2em', fontSize: '11px', color: step.color, opacity: 0.8 }}>
+                        STEP {step.id}
+                      </div>
+                      <h4 className="text-[22px] font-bold text-[#f0f4ff] mb-2 leading-tight">
+                        {step.title}
+                      </h4>
+                      <p className="text-[14px] leading-[1.7] text-[#8892a4]">
+                        {step.description}
+                      </p>
+                    </div>
 
-                  {/* Curved arrow between steps */}
-                  {idx < steps.length - 1 && (
-                    <motion.div
-                      initial={{ opacity: 0, y: -5 }}
-                      whileInView={{ opacity: 1, y: 0 }}
-                      viewport={{ margin: '-40px' }}
-                      transition={{ duration: 0.6, delay: idx * 0.12 + 0.1 }}
-                      className="flex justify-center py-3"
-                    >
-                      <svg className="w-8 h-8 text-[#00f0ff]" viewBox="0 0 24 24" fill="none" stroke="currentColor">
-                        <path d="M12 5v14M19 12l-7 7-7-7" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" opacity="0.6" />
-                      </svg>
-                    </motion.div>
-                  )}
+                    {/* Mobile Only Dashboard Dashed line */}
+                    {step.id !== 6 && (
+                      <div className="md:hidden absolute w-[2px] h-[50px] left-1/2 -bottom-[50px] -translate-x-1/2 border-l-2 border-dashed z-0"
+                           style={{ borderColor: step.color, opacity: 0.5 }} />
+                    )}
+                  </div>
                 </motion.div>
-              ))}
-            </div>
+              );
+            })}
           </div>
+
         </div>
       </div>
     </motion.section>
@@ -1252,9 +1153,9 @@ function CaseStudyCard({ cs, index }) {
                 contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }}
                 cursor={{ fill: 'rgba(255,255,255,0.05)' }}
               />
-              <Bar dataKey="value" fill="#8b5cf6" radius={[6, 6, 0, 0]} barSize={40} isAnimationActive={true} animationDuration={1000}>
+              <Bar dataKey="value" fill="var(--accent-secondary)" radius={[6, 6, 0, 0]} barSize={40} isAnimationActive={true} animationDuration={1000}>
                 {modelComparisonData.map((entry, idx) => (
-                  <Cell key={`cell-${idx}`} fill={entry.name === 'Ensemble' ? '#00f0ff' : '#8b5cf6'} />
+                  <Cell key={`cell-${idx}`} fill={entry.name === 'Ensemble' ? 'var(--accent-primary)' : 'var(--accent-secondary)'} />
                 ))}
               </Bar>
             </BarChart>
@@ -1266,20 +1167,20 @@ function CaseStudyCard({ cs, index }) {
           <AreaChart data={cs.data}>
             <defs>
               <linearGradient id={`colorPredicted-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#00f0ff" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#00f0ff" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
               </linearGradient>
               <linearGradient id={`colorActual-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                <stop offset="5%" stopColor="var(--accent-secondary)" stopOpacity={0.3} />
+                <stop offset="95%" stopColor="var(--accent-secondary)" stopOpacity={0} />
               </linearGradient>
             </defs>
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
             <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
             <YAxis stroke="#64748b" fontSize={12} />
             <Tooltip contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }} />
-            <Area type="monotone" dataKey="predicted" stroke="#00f0ff" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
-            <Area type="monotone" dataKey="actual" stroke="#8b5cf6" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
+            <Area type="monotone" dataKey="predicted" stroke="var(--accent-primary)" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
+            <Area type="monotone" dataKey="actual" stroke="var(--accent-secondary)" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
             <Line type="monotone" dataKey="baseline" stroke="#475569" strokeDasharray="5 5" strokeWidth={1} dot={false} />
           </AreaChart>
         </ResponsiveContainer>
@@ -1298,20 +1199,20 @@ function CaseStudyCard({ cs, index }) {
             <AreaChart data={cs.data}>
               <defs>
                 <linearGradient id={`colorPredicted-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00f0ff" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#00f0ff" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
                 </linearGradient>
                 <linearGradient id={`colorActual-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#8b5cf6" stopOpacity={0.3} />
-                  <stop offset="95%" stopColor="#8b5cf6" stopOpacity={0} />
+                  <stop offset="5%" stopColor="var(--accent-secondary)" stopOpacity={0.3} />
+                  <stop offset="95%" stopColor="var(--accent-secondary)" stopOpacity={0} />
                 </linearGradient>
               </defs>
               <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
               <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
               <YAxis stroke="#64748b" fontSize={12} />
               <Tooltip contentStyle={{ background: 'rgba(26, 26, 46, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,240,255,0.5)', borderRadius: '12px', color: '#e2e8f0', boxShadow: '0 0 20px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1)' }} />
-              <Area type="monotone" dataKey="predicted" stroke="#00f0ff" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={800} />
-              <Area type="monotone" dataKey="actual" stroke="#8b5cf6" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={800} />
+              <Area type="monotone" dataKey="predicted" stroke="var(--accent-primary)" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={800} />
+              <Area type="monotone" dataKey="actual" stroke="var(--accent-secondary)" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={800} />
               <Line type="monotone" dataKey="baseline" stroke="#475569" strokeDasharray="5 5" strokeWidth={1} dot={false} />
             </AreaChart>
           </ResponsiveContainer>
@@ -1334,7 +1235,7 @@ function CaseStudyCard({ cs, index }) {
               <YAxis stroke="#64748b" fontSize={12} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
               <Tooltip contentStyle={{ background: 'rgba(26, 26, 46, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,240,255,0.5)', borderRadius: '12px', color: '#e2e8f0', boxShadow: '0 0 20px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1)' }} cursor={{ fill: 'rgba(255,255,255,0.05)' }} />
               <Bar dataKey="before" fill="#475569" radius={[4, 4, 0, 0]} name="Before" isAnimationActive={true} animationDuration={800} />
-              <Bar dataKey="after" fill="#00f0ff" radius={[4, 4, 0, 0]} name="After" isAnimationActive={true} animationDuration={800} animationDelay={150} />
+              <Bar dataKey="after" fill="var(--accent-primary)" radius={[4, 4, 0, 0]} name="After" isAnimationActive={true} animationDuration={800} animationDelay={150} />
             </BarChart>
           </ResponsiveContainer>
         </motion.div>
@@ -1348,7 +1249,7 @@ function CaseStudyCard({ cs, index }) {
             <PolarAngleAxis dataKey="metric" stroke="#64748b" fontSize={11} />
             <PolarRadiusAxis stroke="rgba(255,255,255,0.05)" domain={[0, 100]} tick={false} />
             <Tooltip contentStyle={{ background: 'rgba(26, 26, 46, 0.8)', backdropFilter: 'blur(8px)', border: '1px solid rgba(0,240,255,0.5)', borderRadius: '12px', color: '#e2e8f0', boxShadow: '0 0 20px rgba(0,240,255,0.3), inset 0 0 20px rgba(0,240,255,0.1)' }} />
-            <Radar dataKey="value" stroke="#00f0ff" fill="#00f0ff" fillOpacity={0.2} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
+            <Radar dataKey="value" stroke="var(--accent-primary)" fill="var(--accent-primary)" fillOpacity={0.2} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
           </RadarChart>
         </ResponsiveContainer>
       );
@@ -1372,14 +1273,14 @@ function CaseStudyCard({ cs, index }) {
                 <span className="text-sm font-bold text-white tracking-tight">{currentModel.title}</span>
                 <div className="flex gap-1.5 ml-2">
                   {cs.models.map((_, i) => (
-                    <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === activeModelIndex ? 'bg-[#00f0ff] w-4' : 'bg-white/10'}`} />
+                    <div key={i} className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${i === activeModelIndex ? 'bg-[var(--accent-primary)] w-4' : 'bg-white/10'}`} />
                   ))}
                 </div>
               </div>
             </div>
             <button
               onClick={() => setActiveModelIndex((activeModelIndex + 1) % cs.models.length)}
-              className="flex items-center gap-2 group py-2.5 px-6 rounded-full bg-[#00f0ff]/5 hover:bg-[#00f0ff]/10 border border-[#00f0ff]/20 text-[#00f0ff] transition-all duration-300 active:scale-95"
+              className="flex items-center gap-2 group py-2.5 px-6 rounded-full bg-[var(--accent-primary)]/5 hover:bg-[var(--accent-primary)]/10 border border-[var(--accent-primary)]/20 text-[var(--accent-primary)] transition-all duration-300 active:scale-95"
             >
               <span className="text-[11px] font-bold tracking-[0.15em] uppercase">Swap Perspective</span>
               <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
@@ -1409,12 +1310,12 @@ function CaseStudyCard({ cs, index }) {
 
           <div className="grid gap-8 mb-10">
             <div className="glass p-5 rounded-xl border border-white/5">
-              <h4 className="flex items-center text-xs font-mono font-bold text-[#00f0ff] mb-2 tracking-[0.05em] uppercase"><Zap className="w-3.5 h-3.5 mr-2" /> The Challenge</h4>
+              <h4 className="flex items-center text-xs font-mono font-bold text-[var(--accent-primary)] mb-2 tracking-[0.05em] uppercase"><Zap className="w-3.5 h-3.5 mr-2" /> The Challenge</h4>
               <p className="text-sm text-gray-400 leading-[1.6]">{cs.challenge}</p>
             </div>
             <div className="glass p-5 rounded-xl border border-white/5 relative overflow-hidden">
-              <div className="absolute top-0 right-0 w-24 h-24 bg-[#8b5cf6] rounded-full opacity-10 blur-xl" />
-              <h4 className="flex items-center text-xs font-mono font-bold text-[#8b5cf6] mb-2 tracking-[0.05em] uppercase"><Cpu className="w-3.5 h-3.5 mr-2" /> Our Solution</h4>
+              <div className="absolute top-0 right-0 w-24 h-24 bg-[var(--accent-secondary)] rounded-full opacity-10 blur-xl" />
+              <h4 className="flex items-center text-xs font-mono font-bold text-[var(--accent-secondary)] mb-2 tracking-[0.05em] uppercase"><Cpu className="w-3.5 h-3.5 mr-2" /> Our Solution</h4>
               <p className="text-sm text-gray-400 leading-[1.6]">{cs.solution}</p>
             </div>
           </div>
@@ -1436,18 +1337,18 @@ function CaseStudyCard({ cs, index }) {
         </div>
 
         {/* Chart Panel */}
-        <div className="p-6 sm:p-12 relative flex flex-col min-h-[400px]">
-          <div className="w-full">
-            <div className="flex items-center justify-between mb-4">
-              <h4 className="text-sm font-mono text-gray-500 tracking-wide uppercase" style={{ textShadow: '0 0 15px rgba(0,240,255,0.4)' }}>
+        <div className="p-6 sm:p-12 relative flex flex-col items-center justify-center min-h-[400px] h-full lg:min-h-[400px]">
+          <div className="w-full relative z-10 max-w-lg mx-auto">
+            <div className="flex items-center justify-between mb-6 pb-4">
+              <h4 className="text-[13px] font-mono text-gray-500 font-bold tracking-widest uppercase">
                 {cs.id === 1 ? (activeChartIndex === 0 ? 'Performance Metrics' : 'Model Comparison') :
                   cs.id === 2 ? 'Data Processing Efficiency' :
                     cs.id === 3 ? 'RAG System Metrics' : 'Interactive 3D Visuals'}
               </h4>
               {cs.id === 1 && (
-                <div className="flex gap-1.5">
-                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeChartIndex === 0 ? 'bg-[#00f0ff] w-3' : 'bg-white/10'}`} />
-                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeChartIndex === 1 ? 'bg-[#00f0ff] w-3' : 'bg-white/10'}`} />
+                <div className="flex gap-2">
+                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeChartIndex === 0 ? 'bg-[var(--accent-primary)] w-3' : 'bg-white/20'}`} />
+                  <div className={`w-1.5 h-1.5 rounded-full transition-all duration-300 ${activeChartIndex === 1 ? 'bg-[var(--accent-secondary)] w-3' : 'bg-white/20'}`} />
                 </div>
               )}
             </div>
@@ -1457,7 +1358,7 @@ function CaseStudyCard({ cs, index }) {
               whileInView={{ opacity: 1, scale: 1 }}
               viewport={{ margin: '-50px' }}
               transition={{ duration: 0.5 }}
-              className={`${cs.chartType === '3d' ? 'w-full' : 'min-h-[min(15rem,30vh)] flex items-center justify-center'}`}
+              className={`flex items-center justify-center w-full min-h-[16rem]`}
             >
               {renderChart()}
             </motion.div>
@@ -1474,11 +1375,11 @@ function CaseStudiesSection() {
     <section id="case-studies" className="py-32 sm:py-40 px-4 sm:px-6 relative">
       {/* Background glow wrapped to prevent overflow */}
       <div className="absolute inset-0 overflow-hidden pointer-events-none">
-        <div className="absolute bottom-0 left-0 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[150px]" />
+        <div className="absolute bottom-0 left-0 w-[clamp(20rem,40vw,40rem)] aspect-square bg-[var(--accent-primary)] rounded-full opacity-[0.02] blur-[150px]" />
       </div>
       <div className="max-w-7xl mx-auto">
         <AnimatedSection className="text-center mb-20">
-          <Badge variant="outline" className="mb-4 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
+          <Badge variant="outline" className="mb-4 border-[var(--accent-primary)]/30 text-[var(--accent-primary)] bg-[var(--accent-primary)]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
             <Target className="w-3.5 h-3.5 mr-2" /> PROVEN RESULTS
           </Badge>
           <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-white mb-5 uppercase" style={{ letterSpacing: '-0.02em', lineHeight: '1.2' }}>
@@ -1505,21 +1406,14 @@ function FounderSection() {
     offset: ['start end', 'end start']
   });
 
-  const sectionScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.82, 1, 0.92]);
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.35, 1, 1, 0.5]);
-  const sectionY = useTransform(scrollYProgress, [0, 0.5, 1], [80, 0, -80]);
-  const cardX = useTransform(scrollYProgress, [0, 0.5, 1], [-80, 0, 80]);
-  const cardY = useTransform(scrollYProgress, [0, 0.5, 1], [50, 0, -50]);
-
   return (
     <motion.section
       ref={containerRef}
-      style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }}
       id="founder"
-      className="py-32 sm:py-40 px-4 sm:px-6 relative"
+      className="py-32 sm:py-40 px-4 sm:px-6 relative overflow-hidden bg-black"
     >
-      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
-      <div className="max-w-6xl mx-auto">
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(15rem,30vw,30rem)] aspect-square bg-[var(--accent-secondary)] rounded-full opacity-[0.03] blur-[120px]" />
+      <div className="max-w-6xl mx-auto" style={{ perspective: '1000px' }}>
         <AnimatedSection className="text-center mb-16">
           <Badge variant="outline" className="mb-4 border-[#ec4899]/30 text-[#ec4899] bg-[#ec4899]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
             <Users className="w-3.5 h-3.5 mr-2" /> LEADERSHIP
@@ -1529,7 +1423,11 @@ function FounderSection() {
           </h2>
         </AnimatedSection>
         <motion.div
-          style={{ x: cardX, y: cardY }}
+          initial={{ opacity: 0, rotateX: 90, y: 50, z: -100 }} 
+          whileInView={{ opacity: 1, rotateX: 0, y: 0, z: 0 }} 
+          exit={{ opacity: 0, rotateX: -90, y: -50, z: -100 }} 
+          viewport={{ once: false, amount: 0.1 }}
+          transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
           className="w-full relative z-10"
         >
           <div className="glass rounded-2xl border border-white/5 overflow-hidden">
@@ -1537,15 +1435,14 @@ function FounderSection() {
               {/* Photo */}
               <div className="lg:col-span-2 relative overflow-hidden">
                 <div className="aspect-square lg:aspect-auto lg:h-full relative">
-                  <img src="/founder.png" alt="Eppa Sai Vardhan Reddy" className="w-full h-full object-cover object-top" />
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#0a0a0f] via-transparent to-transparent" />
-                  <div className="absolute inset-0 bg-gradient-to-r from-transparent to-[#0a0a0f]/50 hidden lg:block" />
+                  <img src="/founder.png" alt="Eppa Sai Vardhan Reddy" className="w-full h-full object-cover object-top opacity-90 mix-blend-screen" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-[var(--bg-elevated)] via-transparent to-transparent" />
                 </div>
               </div>
               {/* Bio */}
               <div className="lg:col-span-3 p-6 sm:p-10 flex flex-col justify-center">
                 <h3 className="text-2xl sm:text-3xl font-bold text-white mb-1 tracking-tight leading-tight">Eppa Sai Vardhan Reddy</h3>
-                <p className="text-[#00f0ff] font-mono mb-5 text-xs tracking-[0.05em] uppercase font-semibold">Founder & Chief Architect</p>
+                <p className="text-[var(--accent-primary)] font-mono mb-5 text-xs tracking-[0.05em] uppercase font-semibold">Founder & Chief Architect</p>
                 <p className="text-gray-300 leading-[1.6] mb-8 max-w-[65ch] text-base">
                   Adaptable and results-oriented Data Science and AI professional with deep expertise in machine learning, NLP, and predictive modeling.
                   A NASA Space Settlement Awardee (World 2nd Prize) and published IEEE researcher, with a proven track record of building AI systems
@@ -1560,7 +1457,7 @@ function FounderSection() {
                     </div>
                   </div>
                   <div className="flex items-start gap-3">
-                    <BookOpen className="w-5 h-5 text-[#8b5cf6] mt-0.5 flex-shrink-0" />
+                    <BookOpen className="w-5 h-5 text-[var(--accent-secondary)] mt-0.5 flex-shrink-0" />
                     <div>
                       <p className="text-sm font-medium text-white">Published Research</p>
                       <p className="text-xs text-gray-500">IEEE ICOECA 2024, IRJMETS 2025</p>
@@ -1587,10 +1484,10 @@ function FounderSection() {
                   ))}
                 </div>
                 <div className="flex items-center gap-4">
-                  <a href="mailto:eppasaivardhanreddy@gmail.com" className="text-gray-400 hover:text-[#00f0ff] transition-colors">
+                  <a href="mailto:eppasaivardhanreddy@gmail.com" className="text-gray-400 hover:text-[var(--accent-primary)] transition-colors">
                     <Mail className="w-5 h-5" />
                   </a>
-                  <a href="https://www.linkedin.com/in/eppa-sai-vardhan-reddy-5b71213a4" className="text-gray-400 hover:text-[#00f0ff] transition-colors">
+                  <a href="https://www.linkedin.com/in/eppa-sai-vardhan-reddy-5b71213a4" className="text-gray-400 hover:text-[var(--accent-primary)] transition-colors">
                     <Linkedin className="w-5 h-5" />
                   </a>
                   <span className="text-sm text-gray-500 ml-2"><MapPin className="w-3.5 h-3.5 inline mr-1" />Hyderabad, India</span>
@@ -1612,11 +1509,8 @@ function DiscoveryForm() {
     offset: ['start end', 'end start']
   });
 
-  const sectionScale = useTransform(scrollYProgress, [0, 0.5, 1], [0.82, 1, 0.92]);
-  const sectionOpacity = useTransform(scrollYProgress, [0, 0.25, 0.75, 1], [0.35, 1, 1, 0.5]);
-  const sectionY = useTransform(scrollYProgress, [0, 0.5, 1], [80, 0, -80]);
-  const essentialsX = useTransform(scrollYProgress, [0, 0.5, 1], [-60, 0, 60]);
-  const essentialsY = useTransform(scrollYProgress, [0, 0.5, 1], [30, 0, -30]);
+  const essentialsX = useTransform(scrollYProgress, [0, 0.5, 1], [-20, 0, 20]);
+  const essentialsY = useTransform(scrollYProgress, [0, 0.5, 1], [10, 0, -10]);
 
   const [step, setStep] = useState(1);
   const [submitting, setSubmitting] = useState(false);
@@ -1669,7 +1563,7 @@ function DiscoveryForm() {
 
   if (submitted) {
     return (
-      <motion.section id="discovery" ref={containerRef} style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }} className="py-24 sm:py-32 px-6">
+      <motion.section id="discovery" ref={containerRef} className="py-24 sm:py-32 px-6">
         <div className="max-w-2xl mx-auto text-center">
           <AnimatedSection>
             <div className="glass rounded-2xl border border-[#10b981]/20 p-10">
@@ -1678,7 +1572,7 @@ function DiscoveryForm() {
               </div>
               <h3 className="text-2xl font-bold text-white mb-3">Project Inquiry Received!</h3>
               <p className="text-gray-400 mb-6">Thank you, {form.fullName}. We&apos;ve sent a confirmation to {form.email}. Our team will review your project details and get back to you within 24 hours.</p>
-              <Button onClick={() => { setSubmitted(false); setStep(1); setForm({ fullName: '', company: '', website: '', email: '', services: [], elevatorPitch: '', budgetTier: '', timeline: '', dataState: '', aiReadiness: [5] }); }} variant="outline" className="border-white/20 text-white hover:border-[#00f0ff]/50">
+              <Button onClick={() => { setSubmitted(false); setStep(1); setForm({ fullName: '', company: '', website: '', email: '', services: [], elevatorPitch: '', budgetTier: '', timeline: '', dataState: '', aiReadiness: [5] }); }} variant="outline" className="border-white/20 text-white hover:border-[var(--accent-primary)]/50">
                 Submit Another Inquiry
               </Button>
             </div>
@@ -1689,11 +1583,11 @@ function DiscoveryForm() {
   }
 
   return (
-    <motion.section id="discovery" ref={containerRef} style={{ scale: sectionScale, opacity: sectionOpacity, y: sectionY }} className="py-32 sm:py-40 px-4 sm:px-6 relative">
-      <div className="absolute top-0 left-0 w-[clamp(10rem,25vw,25rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.02] blur-[120px]" />
+    <motion.section id="discovery" ref={containerRef} className="py-32 sm:py-40 px-4 sm:px-6 relative overflow-hidden bg-black">
+      <div className="absolute top-0 left-0 w-[clamp(10rem,25vw,25rem)] aspect-square bg-[var(--accent-primary)] rounded-full opacity-[0.02] blur-[120px]" />
       <div className="max-w-3xl mx-auto">
         <AnimatedSection className="text-center mb-14">
-          <Badge variant="outline" className="mb-4 border-[#00f0ff]/30 text-[#00f0ff] bg-[#00f0ff]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
+          <Badge variant="outline" className="mb-4 border-[var(--accent-primary)]/30 text-[var(--accent-primary)] bg-[var(--accent-primary)]/5 px-5 py-1.5 text-xs font-mono tracking-[0.05em] uppercase rounded-full font-semibold">
             <Zap className="w-3.5 h-3.5 mr-2" /> PROJECT DISCOVERY
           </Badge>
           <h2 className="text-4xl sm:text-5xl md:text-5xl lg:text-6xl font-extrabold text-white mb-5 uppercase" style={{ letterSpacing: '-0.02em', lineHeight: '1.2' }}>
@@ -1707,39 +1601,47 @@ function DiscoveryForm() {
           <div className="flex items-center justify-center gap-2 mb-10">
             {[1, 2, 3, 4].map(s => (
               <div key={s} className="flex items-center">
-                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 ${s < step ? 'bg-[#00f0ff] text-black' : s === step ? 'border-2 border-[#00f0ff] text-[#00f0ff]' : 'border border-white/20 text-gray-500'
+                <div className={`w-8 h-8 rounded-full flex items-center justify-center text-xs font-semibold transition-all duration-300 ${s < step ? 'bg-[var(--accent-primary)] text-black' : s === step ? 'border-2 border-[var(--accent-primary)] text-[var(--accent-primary)]' : 'border border-white/20 text-gray-500'
                   }`}>
                   {s < step ? <Check className="w-4 h-4" /> : s}
                 </div>
-                {s < 4 && <div className={`w-10 sm:w-16 h-0.5 mx-1 transition-all duration-300 ${s < step ? 'bg-[#00f0ff]' : 'bg-white/10'}`} />}
+                {s < 4 && <div className={`w-10 sm:w-16 h-0.5 mx-1 transition-all duration-300 ${s < step ? 'bg-[var(--accent-primary)]' : 'bg-white/10'}`} />}
               </div>
             ))}
           </div>
 
-          <div className="glass rounded-2xl border border-white/5 p-8 sm:p-10">
+          <div className="glass rounded-2xl border border-white/5 p-8 sm:p-10" style={{ perspective: '1000px' }}>
             <AnimatePresence mode="wait">
               {/* Step 1: Essentials */}
               {step === 1 && (
-                <motion.div key="step1" style={{ x: essentialsX, y: essentialsY }} initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} transition={{ duration: 0.3 }}>
+                <motion.div 
+                  key="step1" 
+                  initial={{ opacity: 0, rotateX: 90, y: 50, z: -100 }} 
+                  whileInView={{ opacity: 1, rotateX: 0, y: 0, z: 0 }} 
+                  exit={{ opacity: 0, rotateX: -90, y: -50, z: -100 }} 
+                  viewport={{ once: false, amount: 0.1 }}
+                  transition={{ duration: 0.6, type: 'spring', bounce: 0.4 }}
+                  className="glass p-6 sm:p-8 rounded-2xl border border-white/5"
+                >
                   <h3 className="text-xl font-semibold text-white mb-6">The Essentials</h3>
                   <div className="space-y-5">
                     <div>
                       <label className="text-sm text-gray-400 mb-1.5 block">Full Name *</label>
-                      <Input value={form.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="John Doe" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[#00f0ff]/50" />
+                      <Input value={form.fullName} onChange={e => updateField('fullName', e.target.value)} placeholder="John Doe" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[var(--accent-primary)]/50" />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
                       <div>
                         <label className="text-sm text-gray-400 mb-1.5 block">Company Name</label>
-                        <Input value={form.company} onChange={e => updateField('company', e.target.value)} placeholder="Acme Inc." className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[#00f0ff]/50" />
+                        <Input value={form.company} onChange={e => updateField('company', e.target.value)} placeholder="Acme Inc." className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[var(--accent-primary)]/50" />
                       </div>
                       <div>
                         <label className="text-sm text-gray-400 mb-1.5 block">Company Website</label>
-                        <Input value={form.website} onChange={e => updateField('website', e.target.value)} placeholder="https://acme.com" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[#00f0ff]/50" />
+                        <Input value={form.website} onChange={e => updateField('website', e.target.value)} placeholder="https://acme.com" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[var(--accent-primary)]/50" />
                       </div>
                     </div>
                     <div>
                       <label className="text-sm text-gray-400 mb-1.5 block">Work Email *</label>
-                      <Input type="email" value={form.email} onChange={e => updateField('email', e.target.value)} placeholder="john@acme.com" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[#00f0ff]/50" />
+                      <Input type="email" value={form.email} onChange={e => updateField('email', e.target.value)} placeholder="john@acme.com" className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[var(--accent-primary)]/50" />
                     </div>
                   </div>
                 </motion.div>
@@ -1755,7 +1657,7 @@ function DiscoveryForm() {
                         key={s.id}
                         onClick={() => toggleService(s.id)}
                         className={`flex items-center gap-3 p-4 rounded-xl border transition-all duration-300 text-left ${form.services.includes(s.id)
-                          ? 'border-[#00f0ff]/50 bg-[#00f0ff]/5'
+                          ? 'border-[var(--accent-primary)]/50 bg-[var(--accent-primary)]/5'
                           : 'border-white/5 bg-white/[0.02] hover:border-white/10'
                           }`}
                       >
@@ -1763,7 +1665,7 @@ function DiscoveryForm() {
                           <s.icon className="w-4 h-4" style={{ color: s.color }} />
                         </div>
                         <span className={`text-sm font-medium ${form.services.includes(s.id) ? 'text-white' : 'text-gray-400'}`}>{s.title}</span>
-                        {form.services.includes(s.id) && <Check className="w-4 h-4 text-[#00f0ff] ml-auto" />}
+                        {form.services.includes(s.id) && <Check className="w-4 h-4 text-[var(--accent-primary)] ml-auto" />}
                       </button>
                     ))}
                   </div>
@@ -1782,7 +1684,7 @@ function DiscoveryForm() {
                         onChange={e => updateField('elevatorPitch', e.target.value)}
                         placeholder="In 2-3 sentences, what is the core problem you are trying to solve?"
                         rows={3}
-                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[#00f0ff]/50 resize-none"
+                        className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 focus:border-[var(--accent-primary)]/50 resize-none"
                       />
                     </div>
                     <div className="grid grid-cols-1 sm:grid-cols-2 gap-5">
@@ -1791,7 +1693,7 @@ function DiscoveryForm() {
                         <select
                           value={form.budgetTier}
                           onChange={e => updateField('budgetTier', e.target.value)}
-                          className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:border-[#00f0ff]/50 focus:outline-none appearance-none"
+                          className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:border-[var(--accent-primary)]/50 focus:outline-none appearance-none"
                         >
                           <option value="" className="bg-[#0a0a0f]">Select budget range</option>
                           {BUDGET_OPTIONS.map(o => <option key={o} value={o} className="bg-[#0a0a0f]">{o}</option>)}
@@ -1802,7 +1704,7 @@ function DiscoveryForm() {
                         <select
                           value={form.timeline}
                           onChange={e => updateField('timeline', e.target.value)}
-                          className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:border-[#00f0ff]/50 focus:outline-none appearance-none"
+                          className="w-full h-10 px-3 rounded-md bg-white/5 border border-white/10 text-white text-sm focus:border-[var(--accent-primary)]/50 focus:outline-none appearance-none"
                         >
                           <option value="" className="bg-[#0a0a0f]">Select timeline</option>
                           {TIMELINE_OPTIONS.map(o => <option key={o} value={o} className="bg-[#0a0a0f]">{o}</option>)}
@@ -1826,7 +1728,7 @@ function DiscoveryForm() {
                           <button
                             key={opt}
                             onClick={() => updateField('dataState', opt)}
-                            className={`p-3 rounded-xl border text-sm text-left transition-all duration-300 ${form.dataState === opt ? 'border-[#00f0ff]/50 bg-[#00f0ff]/5 text-white' : 'border-white/5 text-gray-400 hover:border-white/10'
+                            className={`p-3 rounded-xl border text-sm text-left transition-all duration-300 ${form.dataState === opt ? 'border-[var(--accent-primary)]/50 bg-[var(--accent-primary)]/5 text-white' : 'border-white/5 text-gray-400 hover:border-white/10'
                               }`}
                           >
                             {opt}
@@ -1847,7 +1749,7 @@ function DiscoveryForm() {
                         />
                         <div className="flex justify-between mt-2">
                           <span className="text-xs text-gray-500">1 - Not at all</span>
-                          <span className="text-sm font-mono text-[#00f0ff]">{form.aiReadiness[0]}/10</span>
+                          <span className="text-sm font-mono text-[var(--accent-primary)]">{form.aiReadiness[0]}/10</span>
                           <span className="text-xs text-gray-500">10 - Fully ready</span>
                         </div>
                       </div>
@@ -1872,7 +1774,7 @@ function DiscoveryForm() {
                 <Button
                   onClick={() => setStep(s => s + 1)}
                   disabled={!canProceed()}
-                  className="bg-[#00f0ff] text-black hover:bg-[#00d4e0] disabled:opacity-30 font-semibold"
+                  className="bg-[var(--accent-primary)] text-black hover:bg-[#00d4e0] disabled:opacity-30 font-semibold"
                 >
                   Continue <ChevronRight className="w-4 h-4 ml-1" />
                 </Button>
@@ -1880,7 +1782,7 @@ function DiscoveryForm() {
                 <Button
                   onClick={handleSubmit}
                   disabled={submitting}
-                  className="bg-[#00f0ff] text-black hover:bg-[#00d4e0] disabled:opacity-50 font-semibold px-8"
+                  className="bg-[var(--accent-primary)] text-black hover:bg-[#00d4e0] disabled:opacity-50 font-semibold px-8"
                 >
                   {submitting ? 'Submitting...' : 'Submit Inquiry'} {!submitting && <Send className="w-4 h-4 ml-2" />}
                 </Button>
@@ -1907,7 +1809,7 @@ function ChatMarkdown({ text }) {
           const content = trimmed.replace(/^[-*•]\s/, '');
           return (
             <div key={i} className="flex items-start gap-2 pl-1">
-              <span className="text-[#00f0ff] text-[10px] mt-[5px] flex-shrink-0">●</span>
+              <span className="text-[var(--accent-primary)] text-[10px] mt-[5px] flex-shrink-0">●</span>
               <span>{renderInline(content)}</span>
             </div>
           );
@@ -1918,7 +1820,7 @@ function ChatMarkdown({ text }) {
           const content = trimmed.replace(/^\d+[\.\)]\s/, '');
           return (
             <div key={i} className="flex items-start gap-2 pl-1">
-              <span className="text-[#00f0ff] text-xs font-mono mt-[1px] flex-shrink-0 w-4">{num}.</span>
+              <span className="text-[var(--accent-primary)] text-xs font-mono mt-[1px] flex-shrink-0 w-4">{num}.</span>
               <span>{renderInline(content)}</span>
             </div>
           );
@@ -2001,10 +1903,10 @@ function ChatWidget() {
       {/* Toggle button */}
       <motion.button
         onClick={() => setOpen(!open)}
-        className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-6 z-50 w-14 h-14 rounded-full bg-[#00f0ff] text-black flex items-center justify-center shadow-lg shadow-[#00f0ff]/30 hover:scale-110 transition-transform"
+        className="fixed bottom-[calc(1.5rem+env(safe-area-inset-bottom,0px))] right-6 z-50 w-14 h-14 rounded-full bg-[var(--accent-primary)] text-[#050810] flex items-center justify-center shadow-lg shadow-[var(--accent-primary)]/30 hover:scale-110 transition-transform"
         whileTap={{ scale: 0.9 }}
       >
-        {open ? <X className="w-6 h-6" /> : <MessageSquare className="w-6 h-6" />}
+        {open ? <X className="w-6 h-6 stroke-[3px]" /> : <MessageSquare className="w-6 h-6 stroke-[2.5px]" />}
       </motion.button>
 
       {/* Chat panel */}
@@ -2018,10 +1920,10 @@ function ChatWidget() {
             className="fixed bottom-[calc(6rem+env(safe-area-inset-bottom,0px))] right-6 z-50 w-[380px] max-w-[calc(100vw-3rem)] glass-strong rounded-2xl border border-white/10 overflow-hidden shadow-2xl"
           >
             {/* Header */}
-            <div className="bg-gradient-to-r from-[#00f0ff]/10 to-[#8b5cf6]/10 p-4 border-b border-white/5">
+            <div className="bg-gradient-to-r from-[var(--accent-primary)]/10 to-[var(--accent-secondary)]/10 p-4 border-b border-white/5">
               <div className="flex items-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-[#00f0ff]/10 flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-[#00f0ff]" />
+                <div className="w-8 h-8 rounded-full bg-[var(--accent-primary)]/10 flex items-center justify-center">
+                  <Sparkles className="w-4 h-4 text-[var(--accent-primary)]" />
                 </div>
                 <div>
                   <p className="text-sm font-semibold text-white">Signal Zero AI</p>
@@ -2035,7 +1937,7 @@ function ChatWidget() {
               {messages.map((msg, i) => (
                 <div key={i} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                   <div className={`max-w-[85%] px-4 py-2.5 rounded-2xl text-[13px] leading-relaxed ${msg.role === 'user'
-                    ? 'bg-[#00f0ff] text-black rounded-br-md'
+                    ? 'bg-[var(--accent-primary)] text-black rounded-br-md'
                     : 'bg-white/5 text-[#9CA3AF] rounded-bl-md border border-white/5'
                     }`}>
                     {msg.role === 'user' ? msg.text : <ChatMarkdown text={msg.text} />}
@@ -2046,9 +1948,9 @@ function ChatWidget() {
                 <div className="flex justify-start">
                   <div className="bg-white/5 border border-white/5 rounded-2xl rounded-bl-md px-4 py-3">
                     <div className="flex gap-1">
-                      <div className="w-2 h-2 rounded-full bg-[#00f0ff]/50 animate-bounce" style={{ animationDelay: '0ms' }} />
-                      <div className="w-2 h-2 rounded-full bg-[#00f0ff]/50 animate-bounce" style={{ animationDelay: '150ms' }} />
-                      <div className="w-2 h-2 rounded-full bg-[#00f0ff]/50 animate-bounce" style={{ animationDelay: '300ms' }} />
+                      <div className="w-2 h-2 rounded-full bg-[var(--accent-primary)]/50 animate-bounce" style={{ animationDelay: '0ms' }} />
+                      <div className="w-2 h-2 rounded-full bg-[var(--accent-primary)]/50 animate-bounce" style={{ animationDelay: '150ms' }} />
+                      <div className="w-2 h-2 rounded-full bg-[var(--accent-primary)]/50 animate-bounce" style={{ animationDelay: '300ms' }} />
                     </div>
                   </div>
                 </div>
@@ -2062,9 +1964,9 @@ function ChatWidget() {
                   value={input}
                   onChange={e => setInput(e.target.value)}
                   placeholder="Ask about our services..."
-                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 text-sm flex-1 focus:border-[#00f0ff]/50"
+                  className="bg-white/5 border-white/10 text-white placeholder:text-gray-600 text-sm flex-1 focus:border-[var(--accent-primary)]/50"
                 />
-                <Button type="submit" disabled={!input.trim() || loading} className="bg-[#00f0ff] text-black hover:bg-[#00d4e0] px-3 disabled:opacity-30">
+                <Button type="submit" disabled={!input.trim() || loading} className="bg-[var(--accent-primary)] text-black hover:bg-[#00d4e0] px-3 disabled:opacity-30">
                   <Send className="w-4 h-4" />
                 </Button>
               </form>
@@ -2118,20 +2020,20 @@ function CookieBanner() {
                 <div className="flex flex-col sm:flex-row items-start sm:items-center gap-4">
                   <div className="flex-1">
                     <div className="flex items-center gap-2 mb-2">
-                      <Shield className="w-4 h-4 text-[#00f0ff]" />
+                      <Shield className="w-4 h-4 text-[var(--accent-primary)]" />
                       <span className="text-sm font-semibold text-white">Cookie Preferences</span>
                     </div>
                     <p className="text-xs text-gray-400 leading-relaxed">
                       We use cookies to enhance your browsing experience. You can customize your preferences or accept all.
-                      <button onClick={() => setShowPrivacy(true)} className="text-[#00f0ff] hover:underline ml-1">Privacy Policy</button>
+                      <button onClick={() => setShowPrivacy(true)} className="text-[var(--accent-primary)] hover:underline ml-1">Privacy Policy</button>
                       {' | '}
-                      <button onClick={() => setShowImpressum(true)} className="text-[#00f0ff] hover:underline">Impressum</button>
+                      <button onClick={() => setShowImpressum(true)} className="text-[var(--accent-primary)] hover:underline">Impressum</button>
                     </p>
                   </div>
                   <div className="flex items-center gap-2 flex-shrink-0">
                     <Button onClick={() => setShowDetails(true)} variant="outline" className="border-white/10 text-gray-400 text-xs h-9 px-4 hover:text-white">Customize</Button>
                     <Button onClick={rejectAll} variant="outline" className="border-white/10 text-gray-400 text-xs h-9 px-4 hover:text-white">Reject All</Button>
-                    <Button onClick={acceptAll} className="bg-[#00f0ff] text-black text-xs h-9 px-4 font-semibold hover:bg-[#00d4e0]">Accept All</Button>
+                    <Button onClick={acceptAll} className="bg-[var(--accent-primary)] text-black text-xs h-9 px-4 font-semibold hover:bg-[#00d4e0]">Accept All</Button>
                   </div>
                 </div>
               ) : (
@@ -2144,20 +2046,20 @@ function CookieBanner() {
                     </div>
                     <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                       <div><p className="text-sm text-white">Analytics Cookies</p><p className="text-xs text-gray-500">Help us understand usage patterns</p></div>
-                      <button onClick={() => setPrefs(p => ({ ...p, analytics: !p.analytics }))} className={`w-10 h-5 rounded-full transition-colors ${prefs.analytics ? 'bg-[#00f0ff]' : 'bg-white/20'}`}>
+                      <button onClick={() => setPrefs(p => ({ ...p, analytics: !p.analytics }))} className={`w-10 h-5 rounded-full transition-colors ${prefs.analytics ? 'bg-[var(--accent-primary)]' : 'bg-white/20'}`}>
                         <div className={`w-4 h-4 rounded-full bg-white transition-transform ${prefs.analytics ? 'translate-x-5' : 'translate-x-0.5'}`} />
                       </button>
                     </div>
                     <div className="flex items-center justify-between p-3 rounded-lg bg-white/5">
                       <div><p className="text-sm text-white">Marketing Cookies</p><p className="text-xs text-gray-500">Used for targeted advertising</p></div>
-                      <button onClick={() => setPrefs(p => ({ ...p, marketing: !p.marketing }))} className={`w-10 h-5 rounded-full transition-colors ${prefs.marketing ? 'bg-[#00f0ff]' : 'bg-white/20'}`}>
+                      <button onClick={() => setPrefs(p => ({ ...p, marketing: !p.marketing }))} className={`w-10 h-5 rounded-full transition-colors ${prefs.marketing ? 'bg-[var(--accent-primary)]' : 'bg-white/20'}`}>
                         <div className={`w-4 h-4 rounded-full bg-white transition-transform ${prefs.marketing ? 'translate-x-5' : 'translate-x-0.5'}`} />
                       </button>
                     </div>
                   </div>
                   <div className="flex justify-end gap-2">
                     <Button onClick={() => setShowDetails(false)} variant="outline" className="border-white/10 text-gray-400 text-xs h-9">Back</Button>
-                    <Button onClick={savePrefs} className="bg-[#00f0ff] text-black text-xs h-9 px-6 font-semibold">Save Preferences</Button>
+                    <Button onClick={savePrefs} className="bg-[var(--accent-primary)] text-black text-xs h-9 px-6 font-semibold">Save Preferences</Button>
                   </div>
                 </div>
               )}
@@ -2224,16 +2126,16 @@ function Footer() {
               <SignalZeroLogo className="w-8 h-8" />
               <div>
                 <span className="text-white font-bold tracking-widest">SIGNAL</span>
-                <span className="text-[#00f0ff] font-bold tracking-widest ml-1">ZERO</span>
+                <span className="text-[var(--accent-primary)] font-bold tracking-widest ml-1">ZERO</span>
               </div>
             </div>
             <p className="text-sm text-gray-500 max-w-sm leading-relaxed mb-4">
               Engineering intelligent systems that transform raw data into competitive advantage. Premium AI & Data solutions for forward-thinking businesses.
             </p>
             <div className="flex items-center gap-4">
-              <a href="mailto:eppasaivardhanreddy@gmail.com" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Mail className="w-4 h-4" /></a>
-              <a href="https://www.linkedin.com/in/eppa-sai-vardhan-reddy-5b71213a4" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Linkedin className="w-4 h-4" /></a>
-              <a href="#" className="text-gray-500 hover:text-[#00f0ff] transition-colors"><Globe className="w-4 h-4" /></a>
+              <a href="mailto:eppasaivardhanreddy@gmail.com" className="text-gray-500 hover:text-[var(--accent-primary)] transition-colors"><Mail className="w-4 h-4" /></a>
+              <a href="https://www.linkedin.com/in/eppa-sai-vardhan-reddy-5b71213a4" className="text-gray-500 hover:text-[var(--accent-primary)] transition-colors"><Linkedin className="w-4 h-4" /></a>
+              <a href="#" className="text-gray-500 hover:text-[var(--accent-primary)] transition-colors"><Globe className="w-4 h-4" /></a>
             </div>
           </div>
           <div>
@@ -2267,13 +2169,18 @@ function Footer() {
 // ===== HOME PAGE =====
 export default function Home() {
   return (
-    <main className="bg-[#0a0a0f] text-white min-h-screen overflow-x-hidden">
+    <main className="bg-[#030303] text-white min-h-screen overflow-x-hidden relative">
+      {/* 2% Noise Texture Overlay */}
+      <div 
+        className="fixed inset-0 z-50 pointer-events-none opacity-[0.02]" 
+        style={{ backgroundImage: `url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E")` }}
+      />
       <div className="relative flex flex-col min-h-safe w-full pb-safe">
         <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-          <div className="absolute inset-0 bg-gradient-to-b from-[#060610] via-[#0a0a1a] to-[#0a0a0f]" />
-          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[clamp(20rem,50vw,56rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.025] blur-[150px]" />
-          <div className="absolute top-1/4 right-1/4 w-[clamp(15rem,30vw,31rem)] aspect-square bg-[#8b5cf6] rounded-full opacity-[0.03] blur-[120px]" />
-          <div className="absolute bottom-1/4 left-1/3 w-[clamp(12rem,25vw,25rem)] aspect-square bg-[#00f0ff] rounded-full opacity-[0.015] blur-[100px]" />
+          <div className="absolute inset-0 bg-gradient-to-b from-[#030303] via-[#050505] to-[#030303]" />
+          <div className="absolute top-1/2 left-[40%] -translate-x-1/2 -translate-y-1/2 w-[clamp(20rem,50vw,56rem)] aspect-square bg-[var(--accent-glow)] rounded-full opacity-[0.035] blur-[150px] mix-blend-screen" />
+          <div className="absolute top-1/4 right-1/4 w-[clamp(15rem,30vw,31rem)] aspect-square bg-[#60efff] rounded-full opacity-[0.045] blur-[120px] mix-blend-screen" />
+          <div className="absolute bottom-1/4 left-1/3 w-[clamp(12rem,25vw,25rem)] aspect-square bg-[var(--accent-glow)] rounded-full opacity-[0.025] blur-[100px] mix-blend-screen" />
           <SignalWaveCanvas />
         </div>
         <Navigation />
