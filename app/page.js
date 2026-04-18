@@ -856,6 +856,7 @@ const AnimatedDot = (props) => {
     />
   );
 };
+
 const AnimatedAreaChart = ({ cs }) => {
   const containerRef = useRef(null);
   const inView = useInView(containerRef, { once: false, amount: 0.2 });
@@ -1007,6 +1008,7 @@ const AnimatedModelComparison = ({ cs, modelComparisonData }) => {
     </motion.div>
   );
 };
+
 function HeroSection() {
   const { scrollY } = useScroll();
   const splitX = useTransform(scrollY, [0, 500], [0, 200]);
