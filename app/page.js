@@ -830,6 +830,183 @@ function Navigation() {
 }
 
 // ===== HERO SECTION =====
+
+
+const AnimatedDot = (props) => {
+  const { cx, cy, stroke, index, inView, reducedMotion } = props;
+  if (!inView) return null;
+
+  return (
+    <motion.circle
+      cx={cx}
+      cy={cy}
+      r={4}
+      stroke={stroke}
+      strokeWidth={2}
+      fill="#0a0a1a"
+      initial={{ scale: 0 }}
+      animate={{ scale: 1 }}
+      transition={{ 
+        delay: reducedMotion ? 0 : 2 + (index * 0.05), 
+        type: 'spring', 
+        stiffness: 260, 
+        damping: 20,
+        mass: 0.5
+      }}
+    />
+  );
+};
+const AnimatedAreaChart = ({ cs }) => {
+  const containerRef = useRef(null);
+  const inView = useInView(containerRef, { once: false, amount: 0.2 });
+  const reducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
+  const yParallax = useTransform(scrollYProgress, [0, 1], [25, -25]);
+  
+  // Fill opacity state for flood-in effect
+  const [fillOpacity, setFillOpacity] = useState(0);
+
+  useEffect(() => {
+    if (inView && !reducedMotion) {
+      const timer = setTimeout(() => setFillOpacity(1), 400); // 400ms delay for flood-in
+      return () => clearTimeout(timer);
+    } else {
+      setFillOpacity(0);
+    }
+  }, [inView, reducedMotion]);
+
+  return (
+    <motion.div 
+      ref={containerRef}
+      key={inView ? 'active' : 'reset'}
+      style={{ y: reducedMotion ? 0 : yParallax, opacity: inView ? 1 : 0, willChange: 'transform' }}
+      className="w-full relative"
+    >
+      <ResponsiveContainer width="100%" height={250}>
+        <AreaChart data={cs.data}>
+          <defs>
+            <linearGradient id={`colorPredicted-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={reducedMotion ? 0.3 : 0.3 * fillOpacity} style={{ transition: 'stop-opacity 0.8s ease-in-out' }} />
+              <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
+            </linearGradient>
+            <linearGradient id={`colorActual-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
+              <stop offset="5%" stopColor="var(--accent-secondary)" stopOpacity={reducedMotion ? 0.3 : 0.3 * fillOpacity} style={{ transition: 'stop-opacity 0.8s ease-in-out' }} />
+              <stop offset="95%" stopColor="var(--accent-secondary)" stopOpacity={0} />
+            </linearGradient>
+            <clipPath id={`clip-${cs.id}`}>
+              <motion.rect 
+                x="0" y="0" height="100%"
+                initial={{ width: 0 }}
+                animate={inView ? { width: '100%' } : { width: 0 }}
+                transition={{ duration: 2, ease: "easeInOut", delay: 0 }}
+              />
+            </clipPath>
+            <clipPath id={`clip-staggered-${cs.id}`}>
+              <motion.rect 
+                x="0" y="0" height="100%"
+                initial={{ width: 0 }}
+                animate={inView ? { width: '100%' } : { width: 0 }}
+                transition={{ duration: 2, ease: "easeInOut", delay: 0.3 }}
+              />
+            </clipPath>
+          </defs>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
+          <YAxis stroke="#64748b" fontSize={12} tick={(props) => <AnimatedYAxisTick {...props} inView={inView} reducedMotion={reducedMotion} />} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
+          <Tooltip contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }} />
+          
+          <Area 
+            type="monotone" 
+            dataKey="predicted" 
+            stroke="var(--accent-primary)" 
+            fill={`url(#colorPredicted-${cs.id})`} 
+            strokeWidth={2} 
+            isAnimationActive={false} 
+            clipPath={`url(#clip-${cs.id})`}
+            dot={(props) => <AnimatedDot {...props} inView={inView} reducedMotion={reducedMotion} />} 
+          />
+          <Area 
+            type="monotone" 
+            dataKey="actual" 
+            stroke="var(--accent-secondary)" 
+            fill={`url(#colorActual-${cs.id})`} 
+            strokeWidth={2} 
+            isAnimationActive={false} 
+            clipPath={`url(#clip-staggered-${cs.id})`}
+            dot={(props) => <AnimatedDot {...props} inView={inView} reducedMotion={reducedMotion} />} 
+          />
+          <Line type="monotone" dataKey="baseline" stroke="#475569" strokeDasharray="5 5" strokeWidth={1} dot={false} />
+        </AreaChart>
+      </ResponsiveContainer>
+    </motion.div>
+  );
+};
+
+const AnimatedModelComparison = ({ cs, modelComparisonData }) => {
+  const containerRef = useRef(null);
+  const inView = useInView(containerRef, { once: false, amount: 0.2 });
+  const reducedMotion = useReducedMotion();
+  const { scrollYProgress } = useScroll({ target: containerRef, offset: ["start end", "end start"] });
+  const yParallax = useTransform(scrollYProgress, [0, 1], [25, -25]);
+  const [showPulse, setShowPulse] = useState(false);
+
+  useEffect(() => {
+    if (inView && !reducedMotion) {
+      const timer = setTimeout(() => setShowPulse(true), 1200);
+      return () => clearTimeout(timer);
+    } else {
+      setShowPulse(false);
+    }
+  }, [inView, reducedMotion]);
+
+  return (
+    <motion.div 
+      ref={containerRef}
+      key={inView ? 'active' : 'reset'}
+      style={{ y: reducedMotion ? 0 : yParallax, willChange: 'transform' }}
+      className="w-full relative"
+    >
+      <ResponsiveContainer width="100%" height={250}>
+        <BarChart data={modelComparisonData}>
+          <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
+          <XAxis dataKey="name" stroke="#64748b" fontSize={10} />
+          <YAxis stroke="#64748b" fontSize={10} tick={(props) => <AnimatedYAxisTick {...props} inView={inView} reducedMotion={reducedMotion} />} domain={[0, 100]} />
+          <Tooltip
+            contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }}
+            cursor={{ fill: 'rgba(255,255,255,0.05)' }}
+          />
+          <Bar 
+            dataKey="value" 
+            fill="var(--accent-secondary)" 
+            radius={[6, 6, 0, 0]} 
+            barSize={40} 
+            isAnimationActive={!reducedMotion} 
+            animationDuration={1000}
+            animationBegin={150}
+          >
+            {modelComparisonData.map((entry, idx) => (
+              <Cell 
+                key={`cell-${idx}`} 
+                fill={entry.name === 'Ensemble' ? 'var(--accent-primary)' : 'var(--accent-secondary)'}
+                className={entry.name === 'Ensemble' && showPulse ? 'animate-winnerPulse' : ''}
+              />
+            ))}
+          </Bar>
+        </BarChart>
+      </ResponsiveContainer>
+      <style jsx>{`
+        @keyframes winnerPulse {
+          0%   { filter: drop-shadow(0 0 0px rgba(0,229,255,0)); }
+          50%  { filter: drop-shadow(0 0 12px rgba(0,229,255,0.8)); }
+          100% { filter: drop-shadow(0 0 4px rgba(0,229,255,0.4)); }
+        }
+        .animate-winnerPulse {
+          animation: winnerPulse 1.5s ease-in-out infinite;
+        }
+      `}</style>
+    </motion.div>
+  );
+};
 function HeroSection() {
   const { scrollY } = useScroll();
   const splitX = useTransform(scrollY, [0, 500], [0, 200]);
@@ -1315,63 +1492,14 @@ function CaseStudyCard({ cs, index }) {
   useEffect(() => {
     let interval;
     if (cs.id === 1) {
-      interval = setInterval(() => {
-        setActiveChartIndex(prev => (prev === 0 ? 1 : 0));
-      }, 5000);
-    }
-    return () => clearInterval(interval);
-  }, [cs.id]);
-
-  const renderChart = () => {
-    if (cs.id === 1) {
       if (activeChartIndex === 1) {
-        return (
-          <ResponsiveContainer width="100%" height={250}>
-            <BarChart data={modelComparisonData}>
-              <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-              <XAxis dataKey="name" stroke="#64748b" fontSize={10} />
-              <YAxis stroke="#64748b" fontSize={10} domain={[0, 100]} />
-              <Tooltip
-                contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }}
-                cursor={{ fill: 'rgba(255,255,255,0.05)' }}
-              />
-              <Bar dataKey="value" fill="var(--accent-secondary)" radius={[6, 6, 0, 0]} barSize={40} isAnimationActive={true} animationDuration={1000}>
-                {modelComparisonData.map((entry, idx) => (
-                  <Cell key={`cell-${idx}`} fill={entry.name === 'Ensemble' ? 'var(--accent-primary)' : 'var(--accent-secondary)'} />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        );
+        return <AnimatedModelComparison cs={cs} modelComparisonData={modelComparisonData} />;
       }
-      return (
-        <ResponsiveContainer width="100%" height={250}>
-          <AreaChart data={cs.data}>
-            <defs>
-              <linearGradient id={`colorPredicted-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--accent-primary)" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0} />
-              </linearGradient>
-              <linearGradient id={`colorActual-${cs.id}`} x1="0" y1="0" x2="0" y2="1">
-                <stop offset="5%" stopColor="var(--accent-secondary)" stopOpacity={0.3} />
-                <stop offset="95%" stopColor="var(--accent-secondary)" stopOpacity={0} />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
-            <XAxis dataKey="month" stroke="#64748b" fontSize={12} />
-            <YAxis stroke="#64748b" fontSize={12} label={{ value: 'Minutes', angle: -90, position: 'insideLeft', fill: '#64748b', fontSize: 11 }} />
-            <Tooltip contentStyle={{ background: '#1a1a2e', border: '1px solid rgba(0,240,255,0.2)', borderRadius: '8px', color: '#e2e8f0' }} />
-            <Area type="monotone" dataKey="predicted" stroke="var(--accent-primary)" fill={`url(#colorPredicted-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
-            <Area type="monotone" dataKey="actual" stroke="var(--accent-secondary)" fill={`url(#colorActual-${cs.id})`} strokeWidth={2} isAnimationActive={true} animationDuration={1000} />
-            <Line type="monotone" dataKey="baseline" stroke="#475569" strokeDasharray="5 5" strokeWidth={1} dot={false} />
-          </AreaChart>
-        </ResponsiveContainer>
-      );
+      return <AnimatedAreaChart cs={cs} />;
     }
     if (cs.chartType === 'line') {
-      return (
-        <motion.div
-          initial={{ opacity: 0 }}
+      return <AnimatedAreaChart cs={cs} />;
+    }}
           whileInView={{ opacity: 1 }}
           viewport={{ margin: '-50px' }}
           transition={{ duration: 0.3 }}
